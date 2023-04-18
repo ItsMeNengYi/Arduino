@@ -1,0 +1,1 @@
+int Direction(short botLeft,short topLeft,short topRight,short botRight);

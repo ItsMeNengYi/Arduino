@@ -1,0 +1,1 @@
+extern int Alphabet[27][5][5];
