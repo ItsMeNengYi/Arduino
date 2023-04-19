@@ -15,6 +15,7 @@ private:
   unsigned long startTime;
   unsigned int interval;
   int frame_no;
+  int spacing;
   String text;
   int length;
   bool** wordArray;

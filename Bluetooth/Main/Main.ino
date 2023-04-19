@@ -20,7 +20,7 @@
   
 // } 
 
-Display MyDisplay("HELLO");
+Display MyDisplay("H");
 
 void setup() {
 }; 

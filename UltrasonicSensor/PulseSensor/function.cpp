@@ -23,7 +23,7 @@ bool Pulse(float* prevdistance,int echoPin,int trigPin){
   // Serial.print(" prevdistance: ");
   // Serial.print(*prevdistance);
   // Serial.print(" Speed: ");
-  //   Serial.println(speed);
+  // Serial.println(speed);
   *prevdistance = distance;
   if(speed>1.45){
     return true;

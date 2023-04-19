@@ -34,7 +34,7 @@ void Display::Update_display(){
     startTime = millis();
     frame_no++;
   }
-  if(frame_no>(length * 6)-5+1){
+  if((frame_no>(length * 6)-5+1)||length==1){
     frame_no = 1;
   }
   display(wordArray);
@@ -46,7 +46,7 @@ bool** Display::stringToArray(){
   bool*** array = new bool**[length];
   
   for(int index=0; index<length; index++){
-    ascii_no = (int)text[index]-65;
+    ascii_no = (int)text[index]-32;
     array[index] =  CreateArray(5, 5);
 
     bool** alphabet = CreateArray(5, 5);
