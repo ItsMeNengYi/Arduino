@@ -4,10 +4,18 @@
 #include <Arduino.h>
 #include "alphabet.h"
 
-class Display {
-  /*
+/*
     connect pin 1 to 10
+
+    SAMPLE CODE:
+    Display MyDisplay("Hello World!");
+    void setup() {
+    }; 
+    void loop() {
+      MyDisplay.Update_display();
+    }
   */
+class Display {
 public:
   Display(String text);
 
@@ -15,6 +23,7 @@ private:
   unsigned long startTime;
   unsigned int interval;
   int frame_no;
+  int last_frame;
   int spacing;
   String text;
   int length;
@@ -22,10 +31,10 @@ private:
 
 public:
   void Update_display();
-
+  bool is_last_frame();
 public:
   //Setter
-  void set_text_and_length(String value);
+  void set_text(String value);
   void set_interval(unsigned int value);
   //Getter
   int get_frame_no();

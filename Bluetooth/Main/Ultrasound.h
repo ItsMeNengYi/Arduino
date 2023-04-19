@@ -11,14 +11,14 @@ struct Range {
 
 class Sensor {
 public:
-  Sensor(int echo,int trig);
+  Sensor(int echo,int trig,Display* display);
 private:
+  Display* MyDisplay;
   int echoPin;
   int trigPin;
   long duration;
   float distance;
   float prevdistance;
-  Range init_distance_range;
   Range function_distance_range;
   char command;
   /*
@@ -39,7 +39,6 @@ public:
   float get_distance();
   char get_command();
   // Setter
-  void set_init_distance();
   void set_function_distance();
   void set_command(char comm);
 

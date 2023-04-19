@@ -1,23 +1,30 @@
 #include "Ultrasound.h"
 
-Sensor::Sensor(int echo,int trig) {
+Sensor::Sensor(int echo,int trig,Display* display) {
   this->echoPin = echo;
   this->trigPin = trig;
+  pinMode(trigPin, OUTPUT); 
+  pinMode(echoPin, INPUT); 
+  calculate_distance();
+  this->MyDisplay = display;
+  this->set_function_distance();
 }
 
 bool Sensor::Has_command() {
 
 }
 float Sensor::get_distance() {
-
+  calculate_distance();
+  return distance;
 }
 char Sensor::get_command() {
 
 }
-void Sensor::set_init_distance() {
 
-}
+
 void Sensor::set_function_distance() {
+  MyDisplay->set_text("Set");
+
 
 }
 

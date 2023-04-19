@@ -6,6 +6,7 @@ Display::Display(String text){
   this->frame_no = 1;
   this->startTime = millis();
   this->length = text.length();
+  this->last_frame = (length * 6)-5+1;
   this->wordArray = stringToArray();
   for(int x=1;x<=10;x++){
     pinMode(x, OUTPUT);
@@ -16,10 +17,20 @@ int Display::get_frame_no(){
   return frame_no;
 }
 
-void Display::set_text_and_length(String value){
+bool Display::is_last_frame(){
+  if (frame_no>last_frame){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+void Display::set_text(String value){
   frame_no = 1;
   text = value;
   length = value.length();
+  last_frame = (length * 6)-5+1;
   wordArray = stringToArray();
 }
 
@@ -34,7 +45,7 @@ void Display::Update_display(){
     startTime = millis();
     frame_no++;
   }
-  if((frame_no>(length * 6)-5+1)||length==1){
+  if(is_last_frame()||length==1){
     frame_no = 1;
   }
   display(wordArray);
