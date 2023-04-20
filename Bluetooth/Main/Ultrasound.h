@@ -16,11 +16,15 @@ private:
   Display* MyDisplay;
   int echoPin;
   int trigPin;
+  unsigned long startTime;
   long duration;
   float distance;
   float prevdistance;
-  Range function_distance_range;
+  Range function_range;
   char command;
+  bool isSetting;
+  String current_track;
+
   /*
     "O" = default, none
     "N" = next track
@@ -32,6 +36,7 @@ private:
   */
 
 public:
+  void Update();
   bool Has_command();
 
 public:
@@ -39,12 +44,12 @@ public:
   float get_distance();
   char get_command();
   // Setter
-  void set_function_distance();
-  void set_command(char comm);
+  void set_function_range();
 
 private:
-  float calculate_distance();
   char deter_command();
+  void display_text(String text);
+  void display_command();
 
 };
 

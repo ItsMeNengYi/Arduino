@@ -1,12 +1,11 @@
-#ifndef PROJECT_H
-#define PROJECT_H
+#ifndef DISPLAY_H
+#define DISPLAY_H
 
 #include <Arduino.h>
 #include "alphabet.h"
 
 /*
     connect pin 1 to 10
-
     SAMPLE CODE:
     Display MyDisplay("Hello World!");
     void setup() {
@@ -26,6 +25,7 @@ private:
   int last_frame;
   int spacing;
   String text;
+  String prev_text;
   int length;
   bool** wordArray;
 
@@ -38,6 +38,7 @@ public:
   void set_interval(unsigned int value);
   //Getter
   int get_frame_no();
+  int get_last_frame();
 
 private:
   bool** stringToArray();
