@@ -4,15 +4,15 @@
 #include "Ultrasound.h"
 #include "Bluetooth.h"
 
-// Display MyDisplay(" ");
-// Sensor MySensor(11,12,&MyDisplay);
+Display MyDisplay(" ");
 BluetoothModule MyBlue(15,14);
+Sensor MySensor(11,12,&MyDisplay,&MyBlue);
 void setup() {
   Serial.begin(9600);
 }
 
 void loop() {
-  MyBlue.Update();
-  // MySensor.Update();
-  // MyDisplay.Update_display();
+  // MyBlue.Update();
+  MySensor.Update();
+  MyDisplay.Update_display();
 }

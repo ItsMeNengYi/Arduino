@@ -1,32 +1,37 @@
 #include "Ultrasound.h"
 
-Sensor::Sensor(int echo,int trig,Display* display) {
+Sensor::Sensor(int echo,int trig,Display* display,BluetoothModule* blue) {
   this->echoPin = echo;
   this->trigPin = trig;
-  this->command = "O";
   pinMode(trigPin, OUTPUT); 
   pinMode(echoPin, INPUT); 
   get_distance();
   this->MyDisplay = display;
+  this->MyBlue = blue;
   this->isSetting = true;
+  this->isHolding = false;
+  this->current_track = "None";
 }
 
 void Sensor::Update(){
   
   if(isSetting){
     set_function_range();
+    Serial.println(function_range.start);
+    Serial.println(function_range.end);
+    isSetting = false;
   }
-  else if(Has_command()){
+  else if(In_range()){
     MyDisplay->set_text("YES?");
     MyDisplay->Update_display();
     startTime = millis();
-    get_command();
-    display_command();
+    get_run_command();
+    MyDisplay->set_text(current_track);
   }
 
 
 }
-bool Sensor::Has_command() {
+bool Sensor::In_range() {
   get_distance();
   if ((distance>function_range.start)&&(distance<function_range.end)){
     return true;
@@ -44,46 +49,46 @@ bool Sensor::Has_command() {
   'D' = volume down
 */
 
-char Sensor::deter_command(){
-  get_distance();
-  if (distance<function_range.start){
-    return 'P';
-  }
-  if(distance>function_range.end){
-    return 'N';
-  }
-}
-
-void Sensor::display_command(){
-  switch(command) {
-    case 'N':
-      display_text("Next Track");
-      break;
-    case 'P':
-      display_text("Prev Track");
-      break;
-    default:
-      break;
-  }
-}
-
-char Sensor::get_command() {
-  float temp;
-  prevdistance = distance;
+void Sensor::get_run_command() {
   while(1){
     unsigned long currentTime = millis(); 
     unsigned long elapsedTime = currentTime - startTime; 
-    MyDisplay->Update_display();
     get_distance();
+    MyDisplay->Update_display();
+
+    // Waiting for too long
     if(elapsedTime>5000){
-      break;
+      return;
     }
-    command = deter_command();
-    if(command!="O"){
-      return command;
+
+    // Setting Volume
+    if(!In_range()){
+      isHolding = false;
     }
+    if(isHolding&&(elapsedTime>=2000)){
+      display_text("Vol");
+        while(In_range()){
+          MyDisplay->Update_display();
+        }
+      return;
+    }
+
+    // Next Track
+    if(get_distance()>function_range.end){
+      MyBlue->NextTrack();
+      display_text("Next");
+      return;
+    }
+
+    // Previous Track
+    if (get_distance()<function_range.start){
+      MyBlue->PrevTrack();
+      display_text("Prev");
+      return;
+    }
+  
   }
-  return "O";
+  return;
 }
 
 

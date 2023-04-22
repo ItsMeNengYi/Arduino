@@ -13,5 +13,17 @@ BluetoothModule::Update(){
   }
   Blue.write("Y");
 
+}
+
+void BluetoothModule::NextTrack(){
+
+}
+void BluetoothModule::PrevTrack(){
+
+}
+void BluetoothModule::VolUp(){
+
+}
+void BluetoothModule::VolDown(){
 
 }

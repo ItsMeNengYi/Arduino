@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "Display.h"
+#include "Bluetooth.h"
 
 struct Range {
   int start;
@@ -11,9 +12,10 @@ struct Range {
 
 class Sensor {
 public:
-  Sensor(int echo,int trig,Display* display);
+  Sensor(int echo,int trig,Display* display,BluetoothModule* blue);
 private:
   Display* MyDisplay;
+  BluetoothModule* MyBlue;
   int echoPin;
   int trigPin;
   unsigned long startTime;
@@ -21,8 +23,8 @@ private:
   float distance;
   float prevdistance;
   Range function_range;
-  char command;
   bool isSetting;
+   bool isHolding;
   String current_track;
 
   /*
@@ -37,19 +39,17 @@ private:
 
 public:
   void Update();
-  bool Has_command();
+  bool In_range();
 
 public:
   // Getter
   float get_distance();
-  char get_command();
+  void get_run_command();
   // Setter
   void set_function_range();
 
 private:
-  char deter_command();
   void display_text(String text);
-  void display_command();
 
 };
 

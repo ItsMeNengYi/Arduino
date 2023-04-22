@@ -13,7 +13,10 @@ class BluetoothModule {
   public:
     Update();
   public:
-    bool sendMessage();
+    void NextTrack();
+    void PrevTrack();
+    void VolUp();
+    void VolDown();
 
 };
 
