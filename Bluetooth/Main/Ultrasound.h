@@ -23,8 +23,8 @@ private:
   float distance;
   float prevdistance;
   Range function_range;
-  bool isSetting;
-   bool isHolding;
+  bool isHolding;
+  bool getCommand;
   String current_track;
 
   /*

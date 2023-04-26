@@ -6,6 +6,7 @@ try:
         ser.write(b'C')
     x=1
     while True:
+        ser.write(b'C')
         data = ser.readline(1024)
         if data:
             print(data)
