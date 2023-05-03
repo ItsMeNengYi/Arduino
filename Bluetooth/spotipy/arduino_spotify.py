@@ -10,12 +10,16 @@ current_playing = spot.get_current_track()
 blue.send_current_track(current_playing)
 start_time = time.time()
 while (True):
+    current_time = time.time() 
+    elapsed_time = current_time - start_time
+    # if(input()):
+    #     print("END")
+    #     blue.close()
+    #     break
+    # spot.run_command(blue.get_command())
     if(current_playing!=spot.get_current_track()):
         current_playing = spot.get_current_track()
         blue.send_current_track(current_playing)
-    
-    current_time = time.time() 
-    elapsed_time = current_time - start_time
-    if(elapsed_time>2*60):
-        break
+
     time.sleep(1)
+

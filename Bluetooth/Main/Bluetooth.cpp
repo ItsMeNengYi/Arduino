@@ -1,5 +1,5 @@
 #include "Bluetooth.h"
-
+#include "Ultrasound.h"
 /*
     "O" = default, none
     "N" = next track
@@ -14,19 +14,43 @@
 BluetoothModule::BluetoothModule(int RX,int TX) : Blue(RX,TX){
   Blue.begin(9600);
   this->CurrentTrack = "None";
+  this->ReceivingTrack = false;
+  this->word_counter = 0;
+  this->word_length = 0;
 }
 
 BluetoothModule::Update(){
   if(Blue.available() > 0) 
   {
     char receive = Blue.read(); //Read from Serial Communication
-    CurrentTrack = receive;
-    
+    if (receive == '['){
+      *characters = "";
+      ReceivingTrack = true;
+      word_counter = 0;
+      return;
+    }
+    if (receive == ']'){
+      char temp[word_counter];
+      for(int x; x<word_counter;x++){
+        temp[x]=characters[x];
+      }
+      CurrentTrack = String(temp);
+      MySensor->set_current_track(CurrentTrack);
+
+      ReceivingTrack = false;
+      return;
+    }
+    if(ReceivingTrack){
+      characters[word_counter] = receive;
+      word_counter++;
+      return;
+    }
   }
 }
 
-String BluetoothModule::GetCurrentTrack(){
-  return CurrentTrack;
+
+void BluetoothModule::SetSensor(Sensor* sensor){
+  MySensor = sensor;
 }
 
 void BluetoothModule::NextTrack(){

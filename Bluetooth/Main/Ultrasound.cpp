@@ -3,21 +3,17 @@
 Sensor::Sensor(int echo,int trig,Display* display,BluetoothModule* blue) {
   this->echoPin = echo;
   this->trigPin = trig;
+  this->isHolding = false;
+  this->current_track = "None";
   pinMode(trigPin, OUTPUT); 
   pinMode(echoPin, INPUT); 
   this->MyDisplay = display;
   this->MyBlue = blue;
-  this->isHolding = false;
-  this->current_track = MyBlue->GetCurrentTrack();
-  MyDisplay->set_text(current_track);
-  this->getCommand= false;
+  MyBlue->SetSensor(this);
 }
 
 void Sensor::Update(){
-  MyDisplay->set_text(current_track);
-  if(current_track != MyBlue->GetCurrentTrack()){
-    current_track = MyBlue->GetCurrentTrack();
-  }
+  // MyDisplay->set_text(current_track);
   if(In_range()){
     // MyDisplay->set_text("Yes?");
     // startTime = millis();
@@ -85,6 +81,10 @@ void Sensor::get_run_command() {
   }
 }
 
+void Sensor::set_current_track(String track){
+  current_track = track;
+  MyDisplay->set_text(current_track);
+}
 
 void Sensor::set_function_range() {
   prevdistance = get_distance();

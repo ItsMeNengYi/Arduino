@@ -5,6 +5,7 @@
 #include "Display.h"
 #include "Bluetooth.h"
 
+
 struct Range {
   int start;
   int end;
@@ -47,6 +48,7 @@ public:
   void get_run_command();
   // Setter
   void set_function_range();
+  void set_current_track(String track);
 
 private:
   void display_text(String text);
