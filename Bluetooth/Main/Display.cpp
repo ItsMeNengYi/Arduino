@@ -2,7 +2,7 @@
 
 Display::Display(String text){
   this->text = text;
-  this->interval = 200;
+  this->interval = 150;
   this->frame_no = 1;
   this->startTime = millis();
   this->length = text.length();

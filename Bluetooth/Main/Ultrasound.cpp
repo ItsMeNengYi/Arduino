@@ -8,22 +8,24 @@ Sensor::Sensor(int echo,int trig,Display* display,BluetoothModule* blue) {
   this->MyDisplay = display;
   this->MyBlue = blue;
   this->isHolding = false;
-  this->current_track = blue->GetCurrentTrack();
+  this->current_track = MyBlue->GetCurrentTrack();
+  MyDisplay->set_text(current_track);
   this->getCommand= false;
 }
 
 void Sensor::Update(){
-  if(current_track != blue->GetCurrentTrack()){
-    current_track == blue->GetCurrentTrack();
+  MyDisplay->set_text(current_track);
+  if(current_track != MyBlue->GetCurrentTrack()){
+    current_track = MyBlue->GetCurrentTrack();
   }
   if(In_range()){
-    MyDisplay->set_text("Yes?");
-    startTime = millis();
-    prevdistance = get_distance();
-    get_run_command();
+    // MyDisplay->set_text("Yes?");
+    // startTime = millis();
+    // prevdistance = get_distance();
+    // get_run_command();
     return;
   }
-  MyDisplay->set_text(current_track);
+  
   return;
 }
 bool Sensor::In_range() {
@@ -50,8 +52,7 @@ void Sensor::get_run_command() {
       unsigned long elapsedTime = currentTime - startTime; 
       MyDisplay->Update_display();
       // Waiting for too long
-      if(elapsedTime>5000){
-        MyDisplay->set_text(current_track);
+      if(elapsedTime>3000){
         break;
       }
 

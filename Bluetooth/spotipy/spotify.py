@@ -45,3 +45,4 @@ class SpotifyBot():
     def pause(self):
         print("Pausing...")
         self.bot.pause_playback()
+

@@ -14,6 +14,10 @@
       MyDisplay.Update_display();
     }
   */
+
+/*
+  MAX CHARACTER:43
+*/
 class Display {
 public:
   Display(String text);

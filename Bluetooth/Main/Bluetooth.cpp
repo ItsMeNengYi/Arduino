@@ -13,18 +13,16 @@
 
 BluetoothModule::BluetoothModule(int RX,int TX) : Blue(RX,TX){
   Blue.begin(9600);
-  Blue.listen();
   this->CurrentTrack = "None";
 }
 
 BluetoothModule::Update(){
-  
-  // if(Blue.available() > 0) 
-  // {
+  if(Blue.available() > 0) 
+  {
     char receive = Blue.read(); //Read from Serial Communication
-    Serial.println(receive);
+    CurrentTrack = receive;
     
-  // }
+  }
 }
 
 String BluetoothModule::GetCurrentTrack(){

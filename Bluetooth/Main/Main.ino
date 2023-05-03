@@ -4,16 +4,16 @@
 #include "Ultrasound.h"
 #include "Bluetooth.h"
 
-// Display MyDisplay(" ");
-BluetoothModule MyBlue(15,14);
-// Sensor MySensor(11,12,&MyDisplay,&MyBlue);
+Display MyDisplay("ROXANNE");
+// BluetoothModule MyBlue(12,13);
+// Sensor MySensor(15,14,&MyDisplay,&MyBlue);
 void setup() {
-  Serial.begin(9600);
+  // Serial.begin(9600);
   // MySensor.set_function_range();
 }
 
 void loop() {
-  MyBlue.Update();
+  // MyBlue.Update();
   // MySensor.Update();
-  // MyDisplay.Update_display();
+  MyDisplay.Update_display();
 }
