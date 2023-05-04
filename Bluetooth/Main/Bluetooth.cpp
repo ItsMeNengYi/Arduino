@@ -1,5 +1,6 @@
 #include "Bluetooth.h"
 #include "Ultrasound.h"
+
 /*
     "O" = default, none
     "N" = next track
@@ -11,8 +12,9 @@
   */
 
 
-BluetoothModule::BluetoothModule(int RX,int TX) : Blue(RX,TX){
+BluetoothModule::BluetoothModule(int RX,int TX,Display* display) : Blue(RX,TX){
   Blue.begin(9600);
+  this->MyDisplay = display;
   this->CurrentTrack = "None";
   this->ReceivingTrack = false;
   this->word_counter = 0;
@@ -35,8 +37,8 @@ BluetoothModule::Update(){
         temp[x]=characters[x];
       }
       CurrentTrack = String(temp);
+      MyDisplay->set_text(CurrentTrack,true);
       MySensor->set_current_track(CurrentTrack);
-
       ReceivingTrack = false;
       return;
     }
@@ -48,24 +50,30 @@ BluetoothModule::Update(){
   }
 }
 
-
 void BluetoothModule::SetSensor(Sensor* sensor){
   MySensor = sensor;
 }
 
+String BluetoothModule::GetCurrentTrack(){
+  return CurrentTrack;
+}
+
 void BluetoothModule::NextTrack(){
   Blue.write("N");
+}
 
-}
 void BluetoothModule::PrevTrack(){
-  Blue.write("p");
+  Blue.write("P");
 }
+
 void BluetoothModule::VolUp(){
   Blue.write("U");
 }
+
 void BluetoothModule::VolDown(){
   Blue.write("D");
 }
+
 void BluetoothModule::StopPlaying(){
   Blue.write("S");
 }

@@ -2,7 +2,7 @@ import serial
 
 class BluetoothBot():
     def __init__(self):
-        self.ser = serial.Serial("COM7",9600)
+        self.ser = serial.Serial("COM7",9600, timeout = 0)
     def send_current_track(self,track):
         self.ser.write(b"[")
         track_bytes = track.encode('utf-8') 
@@ -10,7 +10,8 @@ class BluetoothBot():
         self.ser.write(b"]")
 
     def get_command(self):
-        data = self.ser.readline(1024)
+        # if (self.ser.in_waiting > 0):
+        data = self.ser.readline(1024).decode("utf-8")
         if data:
             return data
         return 'O'

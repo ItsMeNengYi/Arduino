@@ -20,6 +20,8 @@ private:
   int echoPin;
   int trigPin;
   unsigned long startTime;
+  unsigned long currentTime;
+  unsigned long elapsedTime;
   long duration;
   float distance;
   float prevdistance;
@@ -27,6 +29,10 @@ private:
   bool isHolding;
   bool getCommand;
   String current_track;
+  int right=0;
+  int left=0;
+  bool cooldown;
+  int maxdistance=50;
 
   /*
     "O" = default, none

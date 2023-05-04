@@ -11,6 +11,7 @@ class SpotifyBot():
         scope = "user-read-playback-state user-modify-playback-state"
         self.device_name = "DESKTOP-CI79GB0"
         device_id = 0
+        self.prev_track = ""
 
         oauth = spotipy.oauth2.SpotifyOAuth(client_id=client_id,client_secret=client_secret,redirect_uri=redirect_uri,scope=scope)
         token = oauth.get_access_token()["access_token"]    
@@ -25,7 +26,9 @@ class SpotifyBot():
     def get_current_track(self):
         current = self.bot.current_user_playing_track()
         track_name =  current["item"]["name"]
-        print(f"Current playing:{track_name}")
+        if(self.prev_track != track_name):
+            print(f"Current playing:{track_name}")
+        self.prev_track = track_name
         return track_name
 
     def get_current_track_artist(self):
@@ -59,12 +62,11 @@ class SpotifyBot():
         #   'V' = set volume
         #   'U' = volume up
         #   'D' = volume down
-        if command == 'O':
-            return
         if command == 'N':
             self.next_track()
             return
         if command == 'P':
+            print("prev")
             self.prev_track()
             return
         if command == 'S':

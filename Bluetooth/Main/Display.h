@@ -32,6 +32,12 @@ private:
   String prev_text;
   int length;
   bool** wordArray;
+  // for LED pin ,eg:1~10 increment=0
+  const short increment = 29;
+
+  bool** tempArray;
+  bool optimiser = 0;
+  String tempWord = "";
 
 public:
   void Update_display();
@@ -39,6 +45,7 @@ public:
 public:
   //Setter
   void set_text(String value);
+  void set_text(String value,bool optimised);
   void set_interval(unsigned int value);
   //Getter
   int get_frame_no();
@@ -51,8 +58,6 @@ private:
   void copyArray(bool **array1, bool** array2);
   void display(bool** matrix);
   void AllLow();
-  void High(int num);
-  void Low(int num);
 };
 
 #endif

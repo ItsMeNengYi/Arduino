@@ -5,14 +5,15 @@
 #include "Bluetooth.h"
 
 Display MyDisplay(" ");
-BluetoothModule MyBlue(12,13);
-Sensor MySensor(15,14,&MyDisplay,&MyBlue);
+BluetoothModule MyBlue(12,13,&MyDisplay);
+Sensor MySensor(9,8,&MyDisplay,&MyBlue);
 void setup() {
-  // MySensor.set_function_range();
+  Serial.begin(9600);
+  MySensor.set_function_range();
 }
 
 void loop() {
   MyBlue.Update();
-  // MySensor.Update();
+  MySensor.Update();
   MyDisplay.Update_display();
 }

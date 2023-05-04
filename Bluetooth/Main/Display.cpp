@@ -9,7 +9,7 @@ Display::Display(String text){
   this->last_frame = (length * 6)-5;
   this->wordArray = stringToArray();
   for(int x=1;x<=10;x++){
-    pinMode(x, OUTPUT);
+    pinMode(x+increment, OUTPUT);
   }
 }
 
@@ -41,21 +41,39 @@ void Display::set_text(String value){
   }
 }
 
+void Display::set_text(String value,bool optimised){
+  if(prev_text!=value){
+    optimiser = true;
+    frame_no = 1;
+    prev_text = text;
+    text = value;
+    length = value.length();
+    last_frame = (length * 6)-5;
+    tempArray = stringToArray();
+  }
+}
+
 void Display::set_interval(unsigned int value){
   interval = value;
 }
 
 void Display::Update_display(){
-  unsigned long currentTime = millis(); 
+  unsigned long currentTime = millis();
   unsigned long elapsedTime = currentTime - startTime; 
   if (elapsedTime>= interval) {
     startTime = millis();
     frame_no++;
+    if(optimiser){
+      wordArray = tempArray;
+      optimiser = false;
+      return;
+    }
   }
   if(frame_no>last_frame||length==1){
     frame_no = 1;
   }
   display(wordArray);
+  return;
 }
 
 
@@ -68,19 +86,17 @@ bool** Display::stringToArray(){
     array[index] =  CreateArray(5, 5);
 
     bool** alphabet = CreateArray(5, 5);
-    for (int i=0; i<5; i++) {
-      for (int j=0; j<5; j++) {
+    for(int i=0; i<5; i++) {
+      for(int j=0; j<5; j++) {
         alphabet[i][j]= Alphabet[ascii_no][i][j];
       }
     }
-
     copyArray(array[index], alphabet);
   }
-
-
   bool** arr = addWords(array);
   return arr;
 }
+
 
 bool** Display::addWords(bool*** matrix_array) {
  int row,column,spacing = 1;
@@ -102,11 +118,11 @@ void Display::display(bool** matrix) {
     AllLow();
     for(int y=0; y<5; y++){
       if (matrix[x][y+frame_no-1]){
-        High(x+1);
-        Low(y+6);
+        digitalWrite(x+1+increment,HIGH);
+        digitalWrite(y+6+increment,LOW);
       }
       else{
-        High(y+6);
+        digitalWrite(y+6+increment,HIGH);
       }
     }
     delay(3);
@@ -134,14 +150,6 @@ bool** Display::CreateArray(int rows, int cols){
 
 void Display::AllLow(){
   for(int x=1;x<=10;x++){
-    Low(x);
+    digitalWrite(x+increment,LOW);
   }
-}
-
-void Display::High(int num) {
-  digitalWrite(num,HIGH);
-}
-
-void Display::Low(int num) {
-  digitalWrite(num,LOW);
 }

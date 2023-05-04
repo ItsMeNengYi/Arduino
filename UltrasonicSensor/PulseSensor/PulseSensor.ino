@@ -25,16 +25,14 @@ int frame_no = 1;
 unsigned long startTime;
 unsigned int interval = 100;
 
-const int trigPin = 9;
-const int echoPin = 10;
+const int trigPin = 14;
+const int echoPin = 15;
 // defines variables
 float prevdistance = 0;
 void setup() {
+  Serial.begin(9600);
   //Led
-  for(int x=1;x<=8;x++){
-      pinMode(x, OUTPUT);
-  }
-  for(int x=11;x<=12;x++){
+  for(int x=1;x<=10;x++){
       pinMode(x, OUTPUT);
   }
   // Sensor
@@ -55,7 +53,7 @@ void loop() {
   if(frame_no>length-1){
         frame_no = 1;
       }
-  if (Pulse(&prevdistance,10,9)||frame_no!=1) {
+  if (Pulse(&prevdistance,echoPin,trigPin)||frame_no!=1) {
   // unsigned long currentTime = millis(); 
   unsigned long elapsedTime = currentTime - startTime; 
     

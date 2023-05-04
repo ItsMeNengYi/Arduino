@@ -10,7 +10,7 @@ bool Pulse(float* prevdistance,int echoPin,int trigPin){
   delayMicroseconds(2);
   // Sets the trigPin on HIGH state for 10 micro seconds
   digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
+  delayMicroseconds(20);
   digitalWrite(trigPin, LOW);
   // Reads the echoPin, returns the sound wave travel time in microseconds
   duration = pulseIn(echoPin, HIGH);
@@ -18,8 +18,8 @@ bool Pulse(float* prevdistance,int echoPin,int trigPin){
   distance = duration * 0.034 / 2;
   speed = (distance-*prevdistance)*100000 /(duration*1000);
   // Prints the distance on the Serial Monitor
-  // Serial.print("Distance: ");
-  // Serial.println(distance);
+  Serial.print("Distance: ");
+  Serial.println(distance);
   // Serial.print(" prevdistance: ");
   // Serial.print(*prevdistance);
   // Serial.print(" Speed: ");
@@ -59,30 +59,15 @@ void Display(int matrix[5][5]) {
 }
 
 void High(int num) {
-  if (num==9){
-    num = 11;
-  }
-  if (num==10){
-    num = 12;
-  }
   digitalWrite(num,HIGH);
 }
 
 void Low(int num) {
-  if (num==9){
-    num = 11;
-  }
-  if (num==10){
-    num = 12;
-  }
   digitalWrite(num,LOW);
 }
 
 void AllLow(){
-  for(int x=1;x<=8;x++){
-    Low(x);
-  }
-  for(int x=11;x<=12;x++){
+  for(int x=1;x<=10;x++){
     Low(x);
   }
 }

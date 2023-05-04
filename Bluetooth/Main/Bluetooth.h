@@ -4,16 +4,18 @@
 
 #include <Arduino.h>
 #include <SoftwareSerial.h> 
+#include "Display.h"
 
 class Sensor;
 
 class BluetoothModule {
   public:
-    BluetoothModule(int RX,int TX);
+    BluetoothModule(int RX,int TX,Display* display);
   private:
-    SoftwareSerial Blue;
     String CurrentTrack;
+    SoftwareSerial Blue;
     Sensor* MySensor;
+    Display* MyDisplay;
     bool ReceivingTrack;
     short word_counter;
     short word_length;
@@ -26,6 +28,7 @@ class BluetoothModule {
     void VolUp();
     void VolDown();
     void StopPlaying();
+    String GetCurrentTrack();
   private:
 
 };
