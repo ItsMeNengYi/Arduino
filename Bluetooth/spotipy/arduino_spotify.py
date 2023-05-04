@@ -16,5 +16,5 @@ try:
             blue.send_current_track(current_playing)
 
         time.sleep(1)
-except ERROR:
+except:
     blue.close()

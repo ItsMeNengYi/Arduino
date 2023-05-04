@@ -31,6 +31,7 @@ private:
   String current_track;
   int right=0;
   int left=0;
+  int middle=0;
   bool cooldown;
   int maxdistance=50;
 

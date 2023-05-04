@@ -58,12 +58,15 @@ void Sensor::Update(){
       prevdistance = get_distance();
       right=0;
       left=0;
+      middle=0;
       while(true){
         get_distance();
         currentTime = millis(); 
         elapsedTime = currentTime - startTime; 
         if(elapsedTime>10){
-          if ((distance-prevdistance)>0){
+          if(((int)distance-(int)prevdistance)==0){
+            middle++;
+          }else if ((distance-prevdistance)>0){
             right++;
             // Serial.print("R");
           }else{
