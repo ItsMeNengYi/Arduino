@@ -41,7 +41,7 @@ class SpotifyBot():
         print("Skipping...")
         self.bot.next_track()
 
-    def prev_track(self):
+    def Prev_track(self):
         print("Previous track...")
         self.bot.previous_track()
 
@@ -76,8 +76,7 @@ class SpotifyBot():
             self.next_track()
             return
         if command == 'P':
-            print("prev")
-            self.prev_track()
+            self.Prev_track()
             return
         if command == 'S':
             self.pause()

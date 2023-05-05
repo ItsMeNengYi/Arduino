@@ -101,7 +101,7 @@ void Display::display(bool** matrix) {
         digitalWrite(y+6+increment,HIGH);
       }
     }
-    delay(3);
+    delay(2);
   }
 }
 
