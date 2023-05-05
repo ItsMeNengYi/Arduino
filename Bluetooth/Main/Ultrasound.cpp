@@ -6,46 +6,48 @@ Sensor::Sensor(int echo,int trig,Display* display,BluetoothModule* blue) {
   this->echoPin = echo;
   this->trigPin = trig;
   this->isHolding = false;
-  this->current_track = "None";
   pinMode(trigPin, OUTPUT); 
   pinMode(echoPin, INPUT); 
   this->MyDisplay = display;
   this->MyBlue = blue;
   MyBlue->SetSensor(this);
   this->cooldown = false;
-
 }
 
 void Sensor::Update(){
-  //     // Setting Volume
-  //   if(!(distance>function_range.start)&&(distance<function_range.end)){
-  //     isHolding = false;
-  //   }
-  //   if(isHolding&&(elapsedTime>=2000)){
-  //     display_text("Vol");
-  //       while((distance>function_range.start)&&(distance<function_range.end)){
-  //         get_distance();
-  //         MyDisplay->Update_display();
-  //       }
-  //     return;
-  //   }
-
-  //   // Next Track
-  //   if(distance>(int)function_range.end+2){
-  //     MyBlue->NextTrack();
-  //     display_text("Next");
-  //     return;
-  //   }
-
-  //   // Previous Track
-  //   if (distance<(int)function_range.start-2){
-  //     MyBlue->PrevTrack();
-  //     display_text("Prev");
-  //     return;
-  //   }
-  //   return;
-  // }
-
+  if(settingVolume){
+    if((millis()-startTime)>=250){
+      if(zeroCount>4){
+        settingVolume = false;
+        cooldown = true;
+        startTime = millis();
+        reset();
+        MyBlue->DoneSettingVol();
+        return;
+      }
+      get_distance();
+      speed = (distance-prevdistance)/0.25;
+      if(speed==0){
+        zeroCount++;
+      }else if((abs(speed)<10)&&(abs(speed)>1)){
+        zeroCount=0;
+        if(speed<0&&volume>0){
+          MyBlue->VolDown();
+          volume--;
+          // Serial.println("D");
+        }else if(speed>0&&volume<25){
+          MyBlue->VolUp();
+          volume++;
+          // Serial.println("U");
+        }
+        MyDisplay->set_text(volume);
+      }
+      startTime = millis();
+      prevdistance = distance;
+      return;
+    }
+    return;
+  }
   currentTime = millis(); 
   if (((currentTime-startTime)>2000)&&cooldown){
     cooldown = false;
@@ -56,9 +58,7 @@ void Sensor::Update(){
       MyDisplay->set_text("?");
       startTime = millis();
       prevdistance = get_distance();
-      right=0;
-      left=0;
-      middle=0;
+      reset();
       while(true){
         get_distance();
         currentTime = millis(); 
@@ -66,6 +66,7 @@ void Sensor::Update(){
         if(elapsedTime>10){
           if(((int)distance-(int)prevdistance)==0){
             middle++;
+            // Serial.print("X");
           }else if ((distance-prevdistance)>0){
             right++;
             // Serial.print("R");
@@ -77,7 +78,15 @@ void Sensor::Update(){
         prevdistance=distance;
         // Waiting for too long
         if(elapsedTime>250){
-          if(right>left){
+          if((middle>=right)&&(middle>=left)){
+            // Serial.println("Hold!");
+            // Set Volume
+            MyDisplay->set_text("VOL");
+            prevdistance = get_distance();
+            settingVolume = true;
+            startTime = millis();
+            return;
+          }else if(right>left){
             MyBlue->NextTrack();
             MyDisplay->set_text("=>");
             // Serial.println("Right!");
@@ -106,6 +115,13 @@ void Sensor::Update(){
   }
   return;
 }
+
+void Sensor::reset(){
+  right=0;
+  left=0;
+  middle=0;
+  zeroCount=0;
+}
 /*
   'O' = default, none
   'N' = next track
@@ -116,10 +132,6 @@ void Sensor::Update(){
   'D' = volume down
 */
 
-
-void Sensor::set_current_track(String track){
-  current_track = track;
-}
 
 void Sensor::set_function_range() {
   prevdistance = get_distance();
@@ -138,8 +150,6 @@ void Sensor::set_function_range() {
   display_text((String)(int)distance);
   function_range.end = (int)distance;
   delay(10);
-  current_track = MyBlue->GetCurrentTrack();
-  MyDisplay->set_text(current_track);
   return;
 }
 
@@ -159,6 +169,7 @@ float Sensor::get_distance() {
   }
   return distance;
 }
+
 void Sensor::display_text(String text){
   MyDisplay->set_text(text);
   while(true){

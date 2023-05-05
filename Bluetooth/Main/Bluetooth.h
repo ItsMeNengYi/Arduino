@@ -20,13 +20,15 @@ class BluetoothModule {
     short word_counter;
     short word_length;
     char characters[42];
+
   public:
-    Update();
+    String Update();
     void SetSensor(Sensor* sensor);
     void NextTrack();
     void PrevTrack();
     void VolUp();
     void VolDown();
+    void DoneSettingVol();
     void StopPlaying();
     String GetCurrentTrack();
   private:

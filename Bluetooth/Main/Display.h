@@ -45,6 +45,7 @@ public:
 public:
   //Setter
   void set_text(String value);
+  void set_text(int volume);
   void set_text(String value,bool optimised);
   void set_interval(unsigned int value);
   //Getter
@@ -53,9 +54,6 @@ public:
 
 private:
   bool** stringToArray();
-  bool** addWords(bool*** matrix_array);
-  bool** CreateArray(int rows, int cols);
-  void copyArray(bool **array1, bool** array2);
   void display(bool** matrix);
   void AllLow();
 };

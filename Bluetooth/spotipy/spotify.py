@@ -12,6 +12,7 @@ class SpotifyBot():
         self.device_name = "DESKTOP-CI79GB0"
         device_id = 0
         self.prev_track = ""
+        self.volume = 70
 
         oauth = spotipy.oauth2.SpotifyOAuth(client_id=client_id,client_secret=client_secret,redirect_uri=redirect_uri,scope=scope)
         token = oauth.get_access_token()["access_token"]    
@@ -20,7 +21,6 @@ class SpotifyBot():
         for device in self.bot.devices()["devices"]:
             if device["name"] == self.device_name:
                 self.device_id = device["id"]
-        print(f"Device id:{self.device_id}")
         return self.device_id
         
     def get_current_track(self):
@@ -49,10 +49,20 @@ class SpotifyBot():
         print("Pausing...")
         self.bot.pause_playback()
     
-    def set_vol(self):
-        print("Vol up")
-        self.bot.volume(50,self.device_id)
-
+    def vol_up(self):
+        if(self.volume<100):
+            print("Vol up")
+            self.volume+=2
+            self.bot.volume(self.volume,self.get_device_id())
+        else:
+            print("Max Volume reached!")
+    def vol_down(self):
+        if(self.volume>0):
+            print("Vol down")
+            self.volume-=2
+            self.bot.volume(self.volume,self.get_device_id())
+        else:
+            print("Min Volume reached!")
     
     def run_command(self,command):
         #   'O' = default, none
@@ -72,8 +82,11 @@ class SpotifyBot():
         if command == 'S':
             self.pause()
             return
-        if command == 'V':
-            self.set_vol()
+        if command == 'U':
+            self.vol_up()
+            return
+        if command == 'D':
+            self.vol_down()
             return
         return
 

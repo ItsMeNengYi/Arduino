@@ -15,13 +15,13 @@
 BluetoothModule::BluetoothModule(int RX,int TX,Display* display) : Blue(RX,TX){
   Blue.begin(9600);
   this->MyDisplay = display;
-  this->CurrentTrack = "None";
+  this->CurrentTrack = "X";
   this->ReceivingTrack = false;
   this->word_counter = 0;
   this->word_length = 0;
 }
 
-BluetoothModule::Update(){
+String BluetoothModule::Update(){
   if(Blue.available() > 0) 
   {
     char receive = Blue.read(); //Read from Serial Communication
@@ -29,7 +29,7 @@ BluetoothModule::Update(){
       *characters = "";
       ReceivingTrack = true;
       word_counter = 0;
-      return;
+      return "";
     }
     if (receive == ']'){
       char temp[word_counter];
@@ -37,17 +37,16 @@ BluetoothModule::Update(){
         temp[x]=characters[x];
       }
       CurrentTrack = String(temp);
-      MyDisplay->set_text(CurrentTrack,true);
-      MySensor->set_current_track(CurrentTrack);
       ReceivingTrack = false;
-      return;
+      return CurrentTrack;
     }
     if(ReceivingTrack){
       characters[word_counter] = receive;
       word_counter++;
-      return;
+      return "";
     }
   }
+  return "";
 }
 
 void BluetoothModule::SetSensor(Sensor* sensor){
@@ -72,6 +71,10 @@ void BluetoothModule::VolUp(){
 
 void BluetoothModule::VolDown(){
   Blue.write("D");
+}
+
+void BluetoothModule::DoneSettingVol(){
+  MyDisplay->set_text(CurrentTrack,1);
 }
 
 void BluetoothModule::StopPlaying(){

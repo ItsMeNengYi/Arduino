@@ -15,6 +15,5 @@ try:
             current_playing = spot.get_current_track()
             blue.send_current_track(current_playing)
 
-        time.sleep(1)
 except:
     blue.close()

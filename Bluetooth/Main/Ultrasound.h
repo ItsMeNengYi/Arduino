@@ -28,12 +28,15 @@ private:
   Range function_range;
   bool isHolding;
   bool getCommand;
-  String current_track;
-  int right=0;
-  int left=0;
-  int middle=0;
+  short right=0;
+  short left=0;
+  short middle=0;
   bool cooldown;
   int maxdistance=50;
+  bool settingVolume = false;
+  short zeroCount=0;
+  int speed;
+  int volume=13;
 
   /*
     "O" = default, none
@@ -55,10 +58,10 @@ public:
   void get_run_command();
   // Setter
   void set_function_range();
-  void set_current_track(String track);
 
 private:
   void display_text(String text);
+  void reset();
 
 };
 

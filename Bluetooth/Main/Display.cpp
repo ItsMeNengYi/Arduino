@@ -1,11 +1,13 @@
 #include "Display.h"
+#define New
 
 Display::Display(String text){
   this->text = text;
+  this->length = text.length();
+  this->spacing = 1;
   this->interval = 150;
   this->frame_no = 1;
   this->startTime = millis();
-  this->length = text.length();
   this->last_frame = (length * 6)-5;
   this->wordArray = stringToArray();
   for(int x=1;x<=10;x++){
@@ -38,6 +40,17 @@ void Display::set_text(String value){
     length = value.length();
     last_frame = (length * 6)-5;
     wordArray = stringToArray();
+  }
+}
+
+void Display::set_text(int volume){
+  frame_no = 1;
+  length = 1;
+  last_frame = (length * 6)-5;
+  for(int i=0; i<5; i++) {
+    for(int j=0; j<5; j++) {
+      wordArray[i][j]= Volume[volume][i][j];
+    }
   }
 }
 
@@ -76,43 +89,6 @@ void Display::Update_display(){
   return;
 }
 
-
-bool** Display::stringToArray(){
-  int ascii_no = 0;
-  bool*** array = new bool**[length];
-  
-  for(int index=0; index<length; index++){
-    ascii_no = (int)text[index]-32;
-    array[index] =  CreateArray(5, 5);
-
-    bool** alphabet = CreateArray(5, 5);
-    for(int i=0; i<5; i++) {
-      for(int j=0; j<5; j++) {
-        alphabet[i][j]= Alphabet[ascii_no][i][j];
-      }
-    }
-    copyArray(array[index], alphabet);
-  }
-  bool** arr = addWords(array);
-  return arr;
-}
-
-
-bool** Display::addWords(bool*** matrix_array) {
- int row,column,spacing = 1;
- bool** final = CreateArray(5, (5+spacing)*length);
-  for (int letter=0; letter<length; letter++){
-    row = 5;
-    column = 5;
-    for (int i=0;i<row;i++){
-      for (int j=0;j<column;j++){
-        final[i][j+ letter*(5 + spacing)] = matrix_array[letter][i][j];
-      }
-    }
-  }
-  return final;
-}
-
 void Display::display(bool** matrix) {
   for(int x=0; x<5; x++){
     AllLow();
@@ -129,27 +105,31 @@ void Display::display(bool** matrix) {
   }
 }
 
-void Display::copyArray(bool **array1, bool** array2) {
-  for (int i=0; i<5; i++) {
-      for (int j=0; j<5; j++) {
-        array1[i][j] = array2[i][j];
-      }
-  }
-}
-
-bool** Display::CreateArray(int rows, int cols){
-  bool** array = new bool*[rows];
-  for (int i=0; i<rows; i++) {
-    array[i] = new bool[cols];
-    for (int j=0; j<cols; j++) {
-      array[i][j] = 0;      
-    }
-  }
-  return array;
-}
-
 void Display::AllLow(){
   for(int x=1;x<=10;x++){
     digitalWrite(x+increment,LOW);
   }
+}
+
+bool** Display::stringToArray(){
+  int ascii_no = 0;
+  int rows=5,cols = (5+spacing)*length;
+  bool** final = new bool*[rows];
+  for (int i=0; i<rows; i++) {
+    final[i] = new bool[cols];
+  }
+  
+  for(int index=0; index<length; index++){
+    ascii_no = (int)text[index]-32;
+    for(int i=0; i<5; i++) {
+      for(int j=0; j<6; j++) {
+        if(j==5){
+          final[i][index*(5+spacing)+j]=0;
+        }else{
+        final[i][index*(5+spacing)+j] = Alphabet[ascii_no][i][j];
+        }
+      }
+    }
+  }
+  return final;
 }
