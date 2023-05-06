@@ -12,7 +12,7 @@ class SpotifyBot():
         self.device_name = "DESKTOP-CI79GB0"
         device_id = 0
         self.prev_track = ""
-        self.volume = 70
+        self.volume = 52
 
         oauth = spotipy.oauth2.SpotifyOAuth(client_id=client_id,client_secret=client_secret,redirect_uri=redirect_uri,scope=scope)
         token = oauth.get_access_token()["access_token"]    
@@ -52,14 +52,14 @@ class SpotifyBot():
     def vol_up(self):
         if(self.volume<100):
             print("Vol up")
-            self.volume+=2
+            self.volume+=4
             self.bot.volume(self.volume,self.get_device_id())
         else:
             print("Max Volume reached!")
     def vol_down(self):
         if(self.volume>0):
             print("Vol down")
-            self.volume-=2
+            self.volume-=4
             self.bot.volume(self.volume,self.get_device_id())
         else:
             print("Min Volume reached!")

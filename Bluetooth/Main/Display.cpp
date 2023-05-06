@@ -1,5 +1,4 @@
 #include "Display.h"
-#define New
 
 Display::Display(String text){
   this->text = text;
@@ -39,6 +38,7 @@ void Display::set_text(String value){
     text = value;
     length = value.length();
     last_frame = (length * 6)-5;
+    tempArray = wordArray;
     wordArray = stringToArray();
   }
 }
@@ -54,17 +54,6 @@ void Display::set_text(int volume){
   }
 }
 
-void Display::set_text(String value,bool optimised){
-  if(prev_text!=value){
-    optimiser = true;
-    frame_no = 1;
-    prev_text = text;
-    text = value;
-    length = value.length();
-    last_frame = (length * 6)-5;
-    tempArray = stringToArray();
-  }
-}
 
 void Display::set_interval(unsigned int value){
   interval = value;
@@ -76,11 +65,6 @@ void Display::Update_display(){
   if (elapsedTime>= interval) {
     startTime = millis();
     frame_no++;
-    if(optimiser){
-      wordArray = tempArray;
-      optimiser = false;
-      return;
-    }
   }
   if(frame_no>last_frame||length==1){
     frame_no = 1;
@@ -113,12 +97,13 @@ void Display::AllLow(){
 
 bool** Display::stringToArray(){
   int ascii_no = 0;
-  int rows=5,cols = (5+spacing)*length;
+  prevcols = cols;
+  cols = (5+spacing)*length;
   bool** final = new bool*[rows];
   for (int i=0; i<rows; i++) {
     final[i] = new bool[cols];
   }
-  
+
   for(int index=0; index<length; index++){
     ascii_no = (int)text[index]-32;
     for(int i=0; i<5; i++) {
@@ -126,7 +111,7 @@ bool** Display::stringToArray(){
         if(j==5){
           final[i][index*(5+spacing)+j]=0;
         }else{
-        final[i][index*(5+spacing)+j] = Alphabet[ascii_no][i][j];
+          final[i][index*(5+spacing)+j] = Alphabet[ascii_no][i][j];
         }
       }
     }

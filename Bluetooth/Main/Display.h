@@ -32,11 +32,13 @@ private:
   String prev_text;
   int length;
   bool** wordArray;
+  int rows = 5;
+  int cols;
+  int prevcols;
   // for LED pin ,eg:1~10 increment=0
   const short increment = 29;
 
   bool** tempArray;
-  bool optimiser = 0;
   String tempWord = "";
 
 public:

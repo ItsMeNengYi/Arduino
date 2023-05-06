@@ -74,7 +74,7 @@ void BluetoothModule::VolDown(){
 }
 
 void BluetoothModule::DoneSettingVol(){
-  MyDisplay->set_text(CurrentTrack,1);
+  MyDisplay->set_text(CurrentTrack);
 }
 
 void BluetoothModule::StopPlaying(){

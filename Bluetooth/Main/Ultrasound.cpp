@@ -1,5 +1,3 @@
-#include <SRF05.h>
-
 #include "Ultrasound.h"
 
 Sensor::Sensor(int echo,int trig,Display* display,BluetoothModule* blue) {
