@@ -9,7 +9,10 @@ BluetoothModule MyBlue(12,13,&MyDisplay);
 Sensor MySensor(9,8,&MyDisplay,&MyBlue);
 String currentTrack;
 void setup() {
-  MySensor.set_function_range();
+  pinMode(10,INPUT);
+  if(!digitalRead(10)){
+    MySensor.set_function_range();
+  }
 }
 
 void loop() {

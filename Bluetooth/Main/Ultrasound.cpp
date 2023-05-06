@@ -10,6 +10,8 @@ Sensor::Sensor(int echo,int trig,Display* display,BluetoothModule* blue) {
   this->MyBlue = blue;
   MyBlue->SetSensor(this);
   this->cooldown = false;
+  this->function_range.start = 11;
+  this->function_range.end = 23;
 }
 
 void Sensor::Update(){

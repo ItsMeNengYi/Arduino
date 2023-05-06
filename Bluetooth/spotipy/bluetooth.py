@@ -19,5 +19,3 @@ class BluetoothBot():
         self.ser.close()
 
             
-
-    
