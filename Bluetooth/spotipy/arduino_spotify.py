@@ -1,9 +1,11 @@
 from spotify import SpotifyBot
 from bluetooth import BluetoothBot
+from keyboard import KeyboardBot
 import sys
 
 spot = SpotifyBot()
 blue = BluetoothBot()
+key = KeyboardBot()
 
 def main():
     try:
@@ -16,6 +18,7 @@ def main():
                 blue.send_current_track(current_playing)
     except:
         if(KeyboardInterrupt):
+            blue.close()
             return
         print("ERROR",sys.exc_info()[0])
         main()
