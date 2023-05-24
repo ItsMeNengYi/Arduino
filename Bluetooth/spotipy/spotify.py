@@ -5,8 +5,8 @@ from spotipy.oauth2 import SpotifyClientCredentials
 
 class SpotifyBot():
     def __init__(self):
-        client_id = ""
-        client_secret = ""
+        client_id = "2590a24f719846b5bca0202a6d738489"
+        client_secret = "025fa563fa4048a9a8a404ee817454af"
         redirect_uri = "https://google.com"
         scope = "user-read-playback-state user-modify-playback-state"
         self.device_name = "DESKTOP-CI79GB0"

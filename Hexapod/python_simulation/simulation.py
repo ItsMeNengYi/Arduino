@@ -47,8 +47,8 @@ def readFile(file,magnitude):
     print(len(vertices))
     return vertices
 
-def draw_text_on_screen(text,position=(0,0)):
-    font = pygame.font.SysFont(None, 40)
+def draw_text_on_screen(text,position=(0,0),size = 40):
+    font = pygame.font.SysFont(None, size)
     img = font.render(f"{text}", True, BLACK)
     screen.blit(img, position)
 
@@ -100,11 +100,34 @@ def ThreeD_rotation(coordinate,pitch=0,yaw=0,roll=0):
 
     return [x,y,z]
 
+
+def weirdo(length):
+    return [[
+        [0,0,0],
+        [0,0,length],
+
+        [length,0,0],
+        [length,0,length],
+
+        [length,length,0],
+        [length,length,length],
+
+        [0,2*length,0],
+        [0,2*length,length],
+        
+        
+        [2*length,length,length],
+        [2*length,2*length,length],
+    ],[
+        [0,1],[2,3],[4,5],[6,7],[0,2],[1,3],[2,4],[3,5],[4,8],[5,8],[8,9],[6,9],[0,6],[7,9],[1,7],[4,6]
+    ],[
+        [4,6,9,8],[2,0,6,4]
+    ]]
 ## Shapes functions (return vertices and edges lists)
 ## square vertices:Square(Length)[0] 
 ## square edges :Square(Length)[1] 
 ## square faces :Square(Length)[2] 
-def Rect(length):
+def Square(length):
     return [[
         [0,0,0],
         [0,length,0],
@@ -120,6 +143,73 @@ def Rect(length):
         [0,2,3,1],[6,4,5,7],[3,1,5,7],[3,2,6,7],[1,0,4,5],[2,0,4,6]
     ]]
 
+def Hexagon(length):
+    l = length
+    return[[
+        [-l*(1*math.cos(DEVIATE_ANGLE)),0,l*math.sin(DEVIATE_ANGLE)],
+        [l*(1*math.cos(DEVIATE_ANGLE)),0,l*math.sin(DEVIATE_ANGLE)],
+        [l,0,0],
+        [l*(1*math.cos(DEVIATE_ANGLE)),0,-l*math.sin(DEVIATE_ANGLE)],
+        [-l*(1*math.cos(DEVIATE_ANGLE)),0,-l*math.sin(DEVIATE_ANGLE)],
+        [-l,0,0]
+    ],[
+        [0,1],[1,2],[2,3],[3,4],[4,5],[5,0]
+    ],["None"]]
+## pyramid vertices:Pyramid(Length)[0] 
+## pyramid edges :Pyramid(Length)[1] 
+## pyramid faces :Pyramid(Length)[2] 
+def Pyramid(length):
+    return [[
+        [0,0,0],
+        [length,0,0],
+        [0,0,length],
+        [length,0,length],
+        [length/2,length,length/2]
+    ],[
+        [0,2],[0,1],[1,3],[2,3],[0,4],[1,4],[2,4],[3,4]
+    ],[
+        [4,0,1],[4,0,2],[4,2,3],[4,1,3],[1,0,2,3]
+    ]]
+
+def Circle(length):
+    resolution = 1
+    vertices = []
+    for i in range(0,361,resolution):
+        vertices.append([length*math.sin(i),length*math.cos(i),0])
+    return [vertices,["None"],["None"]]
+
+
+
+## Animations
+def Animation(Object,vertices,animations):
+    value = vertices
+    for animation in animations:
+        # Checks for animations
+        if animation[0:9] == "Transform": 
+            value = Transform(vertices,[Object.position],int(animation[10:len(animation)]),animation[9])
+            vertices = value
+
+        if animation[0:6] == "Rotate":
+            if len(animation)>6:
+                Center = animation[7:len(animation)-1]
+                center = [0,0,0]
+                temp = 0
+                index1 = 0
+                index2 = 0
+                for char in Center:
+                    if char == ",":
+                        center[index1] = int(Center[temp:index2])
+                        temp = index2 + 1
+                        index1 += 1
+                    index2 += 1
+                center[index1] = int(Center[temp:len(Center)])
+                value = Rotate(vertices,[center],1)
+                vertices = value
+            else:
+                value = Rotate(vertices,[Object.position],1)
+                vertices = value
+    return value
+    
 def Rotate(position,center,speed):
     angular_speed =  time * speed/180 * math.pi
     [[x,y,z]] = matrix_0Add_1Subtract(position,center,1)
@@ -151,7 +241,10 @@ def Transform(position,center,angle,axis):
     return [[x,y,z]]
 
 
-def Get_screen_position(Player,Object, vertices, animation):
+def Get_screen_position(Player, vertices,Object="None", animation="None"):
+    # Animation 
+    if animation != "None":
+        [vertices] = Animation(Object,[vertices],animation)
     Xr0 = vertices[0] - Player.position[0]
     Yr0 = vertices[1] - Player.position[1]
     Zr0 = vertices[2] - Player.position[2]
@@ -222,6 +315,14 @@ class Player():
         upward = ThreeD_rotation([0,self.speed,0],pitch,yaw)
         downward = ThreeD_rotation([0,-self.speed,0],pitch,yaw)
 
+        # # Debug
+        # draw_text_on_screen(f"forward = {int(forward[0]),int(forward[1]),int(forward[2])}",(0,500))
+        # draw_text_on_screen(f"backward = {int(backward[0]),int(backward[1]),int(backward[2])}",(0,550))
+        # draw_text_on_screen(f"left = {int(left[0]),int(left[1]),int(left[2])}",(0,600))
+        # draw_text_on_screen(f"right = {int(right[0]),int(right[1]),int(right[2])}",(0,650))
+        # draw_text_on_screen(f"upward = {int(upward[0]),int(upward[1]),int(upward[2])}",(0,700))
+        # draw_text_on_screen(f"downward = {int(downward[0]),int(downward[1]),int(downward[2])}",(0,750))
+
         if moving_forward:
             [self.position] = matrix_0Add_1Subtract ([self.position],[forward])
         if moving_backward:
@@ -239,6 +340,99 @@ class Player():
         #      [x,y,z]       [x,y]
         return self.position,self.rotation
 
+class Leg():
+    def __init__(self,origin,name):
+        self.sita1 = math.radians(0)
+        self.sita2 = 0
+        self.phi = math.radians(0)
+        self.length1 = 70
+        self.length2 = 100
+        self.vertice1 = origin
+        self.vertice2 = [0,0,0]
+        self.vertice3 = [0,0,0]
+        self.vertices = [self.vertice1,self.vertice2,self.vertice3]
+        self.color = BLACK
+        self.debugVertices = []
+        self.name = name
+        self.Debug = False
+    def update(self,player,required_position=None):
+        if(required_position!=None):
+            [x,y,z] = [-required_position[0],required_position[1],required_position[2]]
+            self.sita2 = math.atan(z/x)
+            a = math.sqrt(x**2 + z**2)
+            self.phi = math.acos((z**2+x**2+y**2-self.length1**2-self.length2**2)/(self.length1*self.length2*2))
+                
+            angle_a = math.atan(math.sin(self.phi)/(self.length1/self.length2 + math.cos(self.phi)))
+            if (angle_a<0):
+                angle_a = math.pi-abs(angle_a)
+            angle_c=math.atan(abs(y/a))
+
+            if(y<0):
+                self.sita1 = angle_a-angle_c
+            else:
+                self.sita1 = angle_a+angle_c
+
+            if(x>0):
+                self.phi = -self.phi
+                self.sita1=math.pi - self.sita1
+
+            a = 0
+            if(self.name=="L1" or self.name=="R3"):
+                a = 1
+            if(self.name=="L3" or self.name=="R1"):
+                a = -1
+            self.sita2 = self.sita2+a*DEVIATE_ANGLE
+            
+        a = self.length1*math.cos(self.sita1)
+        self.vertice2 = [-a*math.cos(self.sita2),self.length1*math.sin(self.sita1),a*math.sin(self.sita2)]
+
+        a = self.length2*math.cos(self.phi-self.sita1)
+        self.vertice3 = [-a*math.cos(self.sita2),-self.length2*math.sin(self.phi-self.sita1),a*math.sin(self.sita2)]
+
+        if(self.Debug):
+            draw_text_on_screen(f"leg position: {int(self.vertice3[0]+self.vertice2[0]),int(self.vertice3[1]+self.vertice2[1]),int(self.vertice3[2]+self.vertice2[2])}",(0,800))
+        
+
+        [self.vertice2] = matrix_0Add_1Subtract ([self.vertice2],[self.vertice1])
+        [self.vertice3] = matrix_0Add_1Subtract ([self.vertice3],[self.vertice2])
+        
+        if(self.Debug):
+            # Display rotation angle
+            draw_text_on_screen(f"sita1: {int(math.degrees(self.sita1))}",(0,600))
+            draw_text_on_screen(f"sita2: {int(math.degrees(self.sita2))}",(0,650))
+            draw_text_on_screen(f"phi: {int(math.degrees(self.phi))}",(0,700))
+
+        leglength = math.sqrt((self.vertice3[0]-self.vertice1[0])**2+(self.vertice3[1]-self.vertice1[1])**2+(self.vertice3[2]-self.vertice1[2])**2)
+
+        if(self.Debug):
+            draw_text_on_screen(f"expected length: {int(math.sqrt(x**2 + y**2 + z**2))} leg length: {int(leglength)}",(0,750))
+
+        ver1 = Get_screen_position(player,self.vertice1,self,"None")
+        ver2 = Get_screen_position(player,self.vertice2,self,"None")
+        ver3 = Get_screen_position(player,self.vertice3,self,"None")
+
+        pygame.draw.line(screen, self.color, ver1, ver2,5)
+        pygame.draw.line(screen, self.color, ver3, ver2,5)
+
+        if(self.Debug):
+            #Draw Axis
+            XYZ_axis(self.vertice1,matrix_0Add_1Subtract ([self.vertice2],[self.vertice1],1)[0],player,[0,self.sita2,self.sita1])
+            XYZ_axis(self.vertice2,matrix_0Add_1Subtract ([self.vertice3],[self.vertice2],1)[0],player,[0,self.sita2,self.phi])
+            # Debug circle
+            circle1 = Object(self.vertice1, Circle(self.length1),[f"TransformY{-int(math.degrees(self.sita2))}"])
+            circle2 = Object(self.vertice2, Circle(self.length2),[f"TransformY{-int(math.degrees(self.sita2))}"])
+            # circle3 = Object(self.vertice1, Circle(20),[f"TransformY{90+self.sita2}"]
+            # circle4 = Object(self.vertice2, Circle(20),[f"TransformY{90+self.sita2}"])
+            circle1.update(player)
+            circle2.update(player)
+            # circle3.update(player)
+            # circle4.update(player)
+
+        self.debugVertices.append(self.vertice3)
+        for vertice in self.debugVertices:
+            rect = pygame.Rect(Get_screen_position(player,vertice),(1,1)) 
+            pygame.draw.rect(screen,RED, rect,1)
+ 
 class Object():
     def __init__(self, initial_position, shape_function, animation = ["None"], color = BLACK, surface_color = GREEN):
         self.position = initial_position
@@ -257,7 +451,7 @@ class Object():
         vertices = matrix_0Add_1Subtract(vertices,self.matrix,0)
         for vertice in vertices:
             i = vertices.index(vertice)
-            vertices[i] = Get_screen_position(player,self, vertices[i],self.animation)
+            vertices[i] = Get_screen_position(player, vertices[i],self,self.animation)
             rect1 = pygame.Rect(vertices[i],(1,1))
             rects.append(rect1)
         for rect in rects:    
@@ -277,43 +471,103 @@ class Object():
         #             list.append(vertices[vertice])
         #         pygame.draw.polygon(screen,self.face_color,list)
 
-class Leg():
-    def __init__(self,length,origin,leg = None):
-        self.origin = origin
-        self.rot1 = 0
-        self.rot2 = 0
-        self.length = length
-        self.leg = leg 
-        self.position = (0,0,0)
-    def update(self,required_position=None):
-        if (self.leg!=None):
-            self.origin = self.leg.position
-        # self.position["y"] = self.length * math.cos(self.rot1)
-        self.rot1 = math.acos(required_position[1]/self.length)
-        # draw_text_on_screen(f"forward = {int(forward[0]),int(forward[1]),int(forward[2])}",(0,500))
+def XYZ_axis(origin,length,player,rot_angles = []):
+    # X
+    Origin = Get_screen_position(player, origin)
+    x_origin = Get_screen_position(player, [origin[0]+length[0],origin[1],origin[2]])
+    pygame.draw.line(screen, RED, Origin, x_origin,3)
 
- 
+    y_origin = Get_screen_position(player, [origin[0],origin[1]+length[1],origin[2]])
+    pygame.draw.line(screen, GREEN, Origin, y_origin,3)
+
+    z_origin = Get_screen_position(player, [origin[0],origin[1],origin[2]+length[2]])
+    pygame.draw.line(screen, BLUE, Origin, z_origin,3)
+    if (rot_angles!=[]):
+        draw_text_on_screen(f"{int(math.degrees(rot_angles[0]))}",x_origin,30)
+        draw_text_on_screen(f"{int(math.degrees(rot_angles[1]))}",y_origin,30)
+        draw_text_on_screen(f"{int(math.degrees(rot_angles[2]))}",z_origin,30)
+
+pos_index = 0.5
+def required_position(time,leg):
+    Z_half_circle(time,leg)
+    # XY_circle(time)
+    # draw_text_on_screen(f"expected position: {[int(-r_x),int(r_y),int(r_z)]}",(0,850))
+    return [r_x,r_y,r_z]
+
+def Z_half_circle(time,leg):
+    global r_x,r_y,r_z,pos_index
+    time = time/100*10
+    period = 4
+    z_offset=0
+    x_offset=0
+    if(leg.name=="R1"or leg.name=="R3" or leg.name=="R2"):
+        time = time + period/2
+    if(leg.name=="L2"or leg.name=="R2"):
+        time = time - period/2
+
+    if(leg.name=="L1"or leg.name=="R1"):
+        z_offset=-50
+    if(leg.name=="L3"or leg.name=="R3"):
+        z_offset=50
+
+    time = time%period
+    # time = period-time
+    if(time <=period/2):
+        #circle
+        r_z = 50*math.cos(time/(period/2)*math.pi)+z_offset
+        r_y = 50*math.sin(time/(period/2)*math.pi)-40
+        r_x = 70+x_offset
+    else:
+        #line
+        r_z = 50*math.cos(time/(period/2)*math.pi)+z_offset
+        r_y = -40
+        r_x = 70+x_offset
+
+    if(leg.name[0]=="R"):
+        r_x = -r_x
+    
+    if(leg.name=="L1"or leg.name=="R3"):
+        [r_x,r_y,r_z] = ThreeD_rotation([r_x,r_y,r_z],0,-DEVIATE_ANGLE)
+    
+    if(leg.name=="L3"or leg.name=="R1"):
+        [r_x,r_y,r_z] = ThreeD_rotation([r_x,r_y,r_z],0,DEVIATE_ANGLE)
+
+def XY_circle(time):
+    global r_x,r_y,r_z
+    time = time/100
+    phase_diff = math.pi*0
+    period = 2
+    r_z = 0
+    r_y = 10*math.sin(time/period*math.pi+phase_diff)-30
+    r_x = 10*math.cos(time/period*math.pi+phase_diff)+30
+
+
+
+DEVIATE_ANGLE = math.pi/3
 # Create Elements
-# Environment = Object((0,0,0), Square(WIDTH))
 Player1 = Player(90, (1920,1080), 1000,)
-part1 = Leg(700,(5000,5000,1010))
-part2 = Leg(700,(5000,5000,1010),part1)
-# chair1 = Object((5000,4800,1010), Chair(100),["TransformX90"])
-# chair2 = Object((5000,5000,1010), Chair(100),["TransformY90"])
-# chair3 = Object((5000,5200,1010), Chair(100),["TransformZ90"])
+leg_L1 = Leg([5025,5000,1053.3],"L1")
+leg_L2 = Leg([5000,5000,1010],"L2")
+leg_L3 = Leg([5025,5000,966.7],"L3")
+
+leg_R1 = Leg([5075,5000,1053.3],"R1")
+leg_R2 = Leg([5100,5000,1010],"R2")
+leg_R3 = Leg([5075,5000,966.7],"R3")
+
+body = Object((5050,5000,1010), Hexagon(50),[])
+
 
 
 Objects_list = [
-    # Environment,
-    # Square1,
-    # Square2,
-    # Pyramid1,
-    # Pyramid2,
-    # Pyramid3,
-    # test_square,
-    # chair1,
-    # chair2,
-    # chair3
+    body
+]
+leg_list = [
+    leg_L1,
+    leg_L2,
+    leg_L3,
+    leg_R1,
+    leg_R2,
+    leg_R3
 ]
 
 #InitialSetting
@@ -335,9 +589,9 @@ mouse_position = (0,0)
 running = True
 # For animation
 time = 0 
+r_x,r_y,r_z = 0,0,0
 while running:
     clock.tick(FPS)
-
     ### Mouse Settings ###
     mouse_movement = (0,0)
     mouse_movement = pygame.mouse.get_rel()
@@ -386,8 +640,10 @@ while running:
         Player1.update((0,0))
     
     for objects in Objects_list:
-        objects.update(Player1)
+        objects.update(Player1,)
 
+    for leg in leg_list:
+        leg.update(Player1,required_position(time,leg))
     # #Debug
 
     time += 1
