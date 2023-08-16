@@ -22,7 +22,7 @@ HEIGHT = 10000
 DEPTH = 10000
 
 ## Screen
-FPS = 60
+FPS = 144
 
 def readFile(file,magnitude):
     vertices=[]
@@ -345,8 +345,8 @@ class Leg():
         self.sita1 = math.radians(0)
         self.sita2 = 0
         self.phi = math.radians(0)
-        self.length1 = 70
-        self.length2 = 100
+        self.length1 = 110
+        self.length2 = 170
         self.vertice1 = origin
         self.vertice2 = [0,0,0]
         self.vertice3 = [0,0,0]
@@ -358,6 +358,8 @@ class Leg():
     def update(self,player,required_position=None):
         if(required_position!=None):
             [x,y,z] = [-required_position[0],required_position[1],required_position[2]]
+            # if(self.name=="L2"):
+            #     print(int(-required_position[0])/10,int(required_position[1])/10,int(required_position[2])/10)
             self.sita2 = math.atan(z/x)
             a = math.sqrt(x**2 + z**2)
             self.phi = math.acos((z**2+x**2+y**2-self.length1**2-self.length2**2)/(self.length1*self.length2*2))
@@ -375,6 +377,9 @@ class Leg():
             if(x>0):
                 self.phi = -self.phi
                 self.sita1=math.pi - self.sita1
+
+            if(self.name=="L2"):
+                print(self.sita1/math.pi*180,self.sita2/math.pi*180,self.phi/math.pi*180)
 
             a = 0
             if(self.name=="L1" or self.name=="R3"):
@@ -396,8 +401,9 @@ class Leg():
         [self.vertice2] = matrix_0Add_1Subtract ([self.vertice2],[self.vertice1])
         [self.vertice3] = matrix_0Add_1Subtract ([self.vertice3],[self.vertice2])
         
-        if(self.Debug):
+        # if(self.Debug):
             # Display rotation angle
+        if(self.name=="L2"):
             draw_text_on_screen(f"sita1: {int(math.degrees(self.sita1))}",(0,600))
             draw_text_on_screen(f"sita2: {int(math.degrees(self.sita2))}",(0,650))
             draw_text_on_screen(f"phi: {int(math.degrees(self.phi))}",(0,700))
@@ -413,6 +419,7 @@ class Leg():
 
         pygame.draw.line(screen, self.color, ver1, ver2,5)
         pygame.draw.line(screen, self.color, ver3, ver2,5)
+        
 
         if(self.Debug):
             #Draw Axis
@@ -428,11 +435,12 @@ class Leg():
             # circle3.update(player)
             # circle4.update(player)
 
-        self.debugVertices.append(self.vertice3)
+        if (self.vertice3 not in self.debugVertices):
+            self.debugVertices.append(self.vertice3)
         for vertice in self.debugVertices:
             rect = pygame.Rect(Get_screen_position(player,vertice),(1,1)) 
             pygame.draw.rect(screen,RED, rect,1)
- 
+
 class Object():
     def __init__(self, initial_position, shape_function, animation = ["None"], color = BLACK, surface_color = GREEN):
         self.position = initial_position
@@ -489,17 +497,21 @@ def XYZ_axis(origin,length,player,rot_angles = []):
 
 pos_index = 0.5
 def required_position(time,leg):
-    Z_half_circle(time,leg)
-    # XY_circle(time)
+    ZY_half_circle(time,leg)
+    # XY_circle(time,leg)
     # draw_text_on_screen(f"expected position: {[int(-r_x),int(r_y),int(r_z)]}",(0,850))
     return [r_x,r_y,r_z]
 
-def Z_half_circle(time,leg):
+def ZY_half_circle(time,leg,turning_angle = 0 ):
     global r_x,r_y,r_z,pos_index
-    time = time/100*10
+    speed = 1
+    turning_angle = math.pi/8
+    time = time/100*speed
     period = 4
     z_offset=0
-    x_offset=0
+    x_offset=130
+    y_offset=-70
+    DistanceTravel = 50
     if(leg.name=="R1"or leg.name=="R3" or leg.name=="R2"):
         time = time + period/2
     if(leg.name=="L2"or leg.name=="R2"):
@@ -510,18 +522,26 @@ def Z_half_circle(time,leg):
     if(leg.name=="L3"or leg.name=="R3"):
         z_offset=50
 
+    # if(turning_angle!=0):
+    #     turning_angle = turning_angle/2
+    #     Radius = 80/math.tan(turning_angle)
+    #     if(leg.name[0]=="L"):
+    #         DistanceTravel = abs((Radius-50))*math.sqrt(2*(1-math.cos(turning_angle)))
+    #     else:
+    #         DistanceTravel = abs((Radius+50))*math.sqrt(2*(1-math.cos(turning_angle)))
+
     time = time%period
     # time = period-time
     if(time <=period/2):
         #circle
-        r_z = 50*math.cos(time/(period/2)*math.pi)+z_offset
-        r_y = 50*math.sin(time/(period/2)*math.pi)-40
-        r_x = 70+x_offset
+        r_z = DistanceTravel*math.cos(time/(period/2)*math.pi)+z_offset
+        r_y = DistanceTravel*math.sin(time/(period/2)*math.pi)+y_offset
+        r_x = x_offset
     else:
         #line
-        r_z = 50*math.cos(time/(period/2)*math.pi)+z_offset
-        r_y = -40
-        r_x = 70+x_offset
+        r_z = DistanceTravel*math.cos(time/(period/2)*math.pi)+z_offset
+        r_y = y_offset
+        r_x = x_offset
 
     if(leg.name[0]=="R"):
         r_x = -r_x
@@ -532,7 +552,14 @@ def Z_half_circle(time,leg):
     if(leg.name=="L3"or leg.name=="R1"):
         [r_x,r_y,r_z] = ThreeD_rotation([r_x,r_y,r_z],0,DEVIATE_ANGLE)
 
-def XY_circle(time):
+
+    # if(turning_angle!=0 ):
+    #     center = [CENTER[0]+Radius*abs(turning_angle)/turning_angle,CENTER[1],CENTER[2]]
+    #     [r_x,r_y,r_z] = ThreeD_rotation(matrix_0Add_1Subtract ([[r_x,r_y,r_z]],[center],1)[0],0,math.degrees(turning_angle))
+    #     [[r_x,r_y,r_z]] = matrix_0Add_1Subtract ([[r_x,r_y,r_z]],[center])
+
+
+def XY_circle(time,leg):
     global r_x,r_y,r_z
     time = time/100
     phase_diff = math.pi*0
@@ -544,6 +571,8 @@ def XY_circle(time):
 
 
 DEVIATE_ANGLE = math.pi/3
+CENTER = [5050,5000,1010]
+
 # Create Elements
 Player1 = Player(90, (1920,1080), 1000,)
 leg_L1 = Leg([5025,5000,1053.3],"L1")
@@ -554,9 +583,7 @@ leg_R1 = Leg([5075,5000,1053.3],"R1")
 leg_R2 = Leg([5100,5000,1010],"R2")
 leg_R3 = Leg([5075,5000,966.7],"R3")
 
-body = Object((5050,5000,1010), Hexagon(50),[])
-
-
+body = Object(CENTER, Hexagon(50),[])
 
 Objects_list = [
     body
@@ -640,7 +667,7 @@ while running:
         Player1.update((0,0))
     
     for objects in Objects_list:
-        objects.update(Player1,)
+        objects.update(Player1)
 
     for leg in leg_list:
         leg.update(Player1,required_position(time,leg))

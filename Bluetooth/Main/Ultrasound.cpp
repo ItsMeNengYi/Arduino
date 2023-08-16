@@ -16,7 +16,7 @@ Sensor::Sensor(int echo,int trig,Display* display,BluetoothModule* blue) {
 
 void Sensor::Update(){
   if(settingVolume){
-    if((millis()-startTime)>=250){
+    if((millis()-startTime)>=300){
       if(zeroCount>4){
         settingVolume = false;
         cooldown = true;

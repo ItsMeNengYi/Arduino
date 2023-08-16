@@ -88,4 +88,3 @@ class SpotifyBot():
             self.vol_down()
             return
         return
-

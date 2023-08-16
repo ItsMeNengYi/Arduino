@@ -2,7 +2,7 @@ import serial
 
 class BluetoothBot():
     def __init__(self):
-        self.ser = serial.Serial("COM7",9600, timeout = 0)
+        self.ser = serial.Serial("COM16",9600, timeout = 0)
     def send_current_track(self,track):
         self.ser.write(b"[")
         track_bytes = track.encode('utf-8') 
