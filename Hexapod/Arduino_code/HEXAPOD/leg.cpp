@@ -23,6 +23,7 @@ void Leg::Update(unsigned long time){
   calculator->CalculateAngle(this,time);
   calculator->GetAngle(this);
 
+
   //transform
   angle_thigh1+=135;
   angle_thigh2+=135;
@@ -31,11 +32,11 @@ void Leg::Update(unsigned long time){
   angle_thigh2+=error_angle_thigh2;
   angle_knee+=error_angle_knee;
   
-  Serial.print(angle_thigh1);
+  Serial.print(angle_thigh1/270*180);
   Serial.print(" ");
-  Serial.print(angle_thigh2);
+  Serial.print(angle_thigh2/270*180);
   Serial.print(" ");
-  Serial.println(angle_knee);
+  Serial.println(angle_knee/270*180);
 
   servo_thigh1.write(angle_thigh1/270*180); 
   prev_angle_thigh1 = angle_thigh1;

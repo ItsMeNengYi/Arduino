@@ -9,7 +9,7 @@ Math calculator;
 Leg demoleg(10,11,12,&calculator);
 
 void setup() {
-  // Serial.begin(9600);
+  Serial.begin(9600);
   demoleg.Reset();
   delay(500);
 }
