@@ -9,21 +9,21 @@ Math::Math(){
 void Math::CalculateAngle(Leg* leg,unsigned long time_elapsed){
   this->length1 = leg->length_thigh;
   this->length2 = leg->length_calf;
-  double speed = leg->GetSpeed(); 
+  float speed = leg->GetSpeed(); 
   // turning_angle = math.pi/8
-  unsigned int period = 2000;
-  double z_offset=0;
-  double x_offset=130;
-  double y_offset=-70;
-  double DistanceTravel = 50;
-  double r_x;
-  double r_y;
-  double r_z;
+  int period = 8000;
+  short z_offset=0;
+  short x_offset=13;
+  short y_offset=-7;
+  float DistanceTravel = 5;
+  float r_x;
+  float r_y;
+  float r_z;
 
-  double angle_a;
-  double angle_c;
-  double a;
-  double time = time_elapsed%period;
+  float angle_a;
+  float angle_c;
+  float a;
+  float time = time_elapsed%period;
   double phase_angle = time/(period/2)*M_PI;
 
   if(time <=period/2){
@@ -76,7 +76,12 @@ void Math::CalculateAngle(Leg* leg,unsigned long time_elapsed){
   phi = phi/M_PI*180;
   phi = phi-sita1;
   
-  
+  // Serial.print(sita1);
+  // Serial.print(" ");
+  // Serial.print(sita2);
+  // Serial.print(" ");
+  // Serial.println(phi);
+
 }
 void Math::GetAngle(Leg* leg){
   leg->SetAngles(sita1,sita2,phi);

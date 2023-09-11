@@ -3,10 +3,7 @@ const uint8_t frequency = 333;//Hz
 const long timeInterval = 10^6/frequency;//microsecond
 const uint8_t deadBand = 3;//microsecond
 
-#include <Servo.h>
-Servo myservo1;
-Servo myservo2;
-Servo myservo3;
+MyServo driver;
 int prev_pos1 = 0;
 int prev_pos2 = 0;
 int prev_pos3 = 0;
@@ -16,9 +13,6 @@ int val_pin3 = A2;
 float max = 1023;
 void setup() {
   // Serial.begin(9600);
-  myservo1.attach(10);
-  myservo2.attach(11);
-  myservo3.attach(12);
   pinMode(val_pin1, INPUT);
   pinMode(val_pin2, INPUT);
   pinMode(val_pin3, INPUT);
@@ -29,23 +23,23 @@ void loop() {
     // myservo2.write(90); 
   //   myservo3.write(90); 
   float val1 = analogRead(val_pin1);
-  float temp1 = val1/max*180; 
+  float temp1 = val1/max*270; 
   if((temp1 >= prev_pos1+1)||(temp1 <= prev_pos1-1)){
-    myservo1.write(int(temp1)); 
+    driver.SetAngle(0,int(temp1));
   prev_pos1 = temp1;
   }
 
   float val2 = analogRead(val_pin2);
-  float temp2 = val2/max*180; 
+  float temp2 = val2/max*270; 
   if((temp2 >= prev_pos2+1)||(temp2 <= prev_pos2-1)){
-    myservo2.write(int(temp2)); 
+    driver.SetAngle(1,int(temp2));
     prev_pos2 = temp2;
   }
 
   float val3 = analogRead(val_pin3);
-  float temp3 = val3/max*180; 
+  float temp3 = val3/max*270; 
   if((temp3 >= prev_pos3+1)||(temp3 <= prev_pos3-1)){
-    myservo3.write(int(temp3)); 
+    driver.SetAngle(2,int(temp3));
     prev_pos3 = temp3;
   }
   // Serial.print(temp1/180*270);

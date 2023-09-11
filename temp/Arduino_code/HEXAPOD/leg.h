@@ -1,23 +1,26 @@
 #ifndef LEG_H
 #define LEG_H
 
-#include "servo.h"
+#include <ESP32Servo.h>
 
 class Math;
+
 class Leg{
 public:
-  Leg(Math* calculator, MyServo* driver);
+  Leg(unsigned int pin_no1,unsigned int pin_no2,unsigned int pin_no3,Math* calculator);
   int length_thigh;
   int length_calf;
 private:
   Math* calculator;
-  MyServo* driver;
+  Servo servo_thigh1;
+  Servo servo_thigh2;
+  Servo servo_knee;
 
   float speed;
 
-  unsigned short index_thigh1;
-  unsigned short index_thigh2;
-  unsigned short index_knee;
+  unsigned int pin_thigh1;
+  unsigned int pin_thigh2;
+  unsigned int pin_knee;
 
   double angle_thigh1;
   double angle_thigh2;
@@ -27,7 +30,12 @@ private:
   double prev_angle_thigh2;
   double prev_angle_knee;
 
+  double error_angle_thigh1;
+  double error_angle_thigh2;
+  double error_angle_knee;
+
   unsigned long time_elapsed;
+
 
 private:
 
