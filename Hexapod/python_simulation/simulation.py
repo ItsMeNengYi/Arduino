@@ -345,7 +345,7 @@ class Leg():
         self.sita1 = math.radians(0)
         self.sita2 = 0
         self.phi = math.radians(0)
-        self.length1 = 110
+        self.length1 = 100
         self.length2 = 170
         self.vertice1 = origin
         self.vertice2 = [0,0,0]
@@ -507,9 +507,9 @@ def ZY_half_circle(time,leg,turning_angle = 0 ):
     speed = 1
     turning_angle = math.pi/8
     time = time/100*speed
-    period = 4
-    z_offset=0
-    x_offset=130
+    period = 2
+    z_offset=-25
+    x_offset=90
     y_offset=-70
     DistanceTravel = 50
     if(leg.name=="R1"or leg.name=="R3" or leg.name=="R2"):
@@ -531,7 +531,16 @@ def ZY_half_circle(time,leg,turning_angle = 0 ):
     #         DistanceTravel = abs((Radius+50))*math.sqrt(2*(1-math.cos(turning_angle)))
 
     time = time%period
-    # time = period-time
+
+    # if(time <=period/2):
+    #     r_z = (DistanceTravel+10)*2*time/(period)+z_offset
+    #     r_y = (DistanceTravel-20)*math.sin(time/(period)*4*math.pi)+y_offset
+    #     r_x = x_offset
+    # else:
+    #     r_z = (DistanceTravel+10)*(1-2*(time-period/2)/(period))+z_offset
+    #     r_y = (DistanceTravel-20)*math.sin(2*math.pi-(time-period/2)/(period)*4*math.pi)+y_offset
+    #     r_x = x_offset
+    
     if(time <=period/2):
         #circle
         r_z = DistanceTravel*math.cos(time/(period/2)*math.pi)+z_offset

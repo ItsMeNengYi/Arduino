@@ -8,8 +8,8 @@ Leg::Leg(Math* calculator,MyServo* driver){
   this->prev_angle_thigh1 = 0;
   this->prev_angle_thigh2 = 0;
   this->prev_angle_knee = 0;
-  this->index_thigh1= 0;
-  this->index_thigh2= 1; 
+  this->index_thigh2= 0;
+  this->index_thigh1= 1; 
   this->index_knee= 2; 
   this->calculator = calculator;
   this->driver = driver;
@@ -33,12 +33,15 @@ void Leg::Update(unsigned long time){
 
   
   driver->SetAngle(index_thigh1,angle_thigh1);
+  driver->SetAngle(index_thigh1+4,angle_thigh1);
   prev_angle_thigh1 = angle_thigh1;
 
   driver->SetAngle(index_thigh2,angle_thigh2);
+  driver->SetAngle(index_thigh2+4,angle_thigh2);
   prev_angle_thigh2 = angle_thigh2;
 
   driver->SetAngle(index_knee,angle_knee);
+  driver->SetAngle(index_knee+4,angle_knee);
   prev_angle_knee = angle_knee;
 }
 
@@ -52,6 +55,9 @@ void Leg::Reset(){
   driver->SetAngle(index_thigh1,135);
   driver->SetAngle(index_thigh2,135);
   driver->SetAngle(index_knee,180);
+  driver->SetAngle(index_thigh1+4,135);
+  driver->SetAngle(index_thigh2+4,135);
+  driver->SetAngle(index_knee+4,180);
 }
 
 float Leg::GetSpeed(){

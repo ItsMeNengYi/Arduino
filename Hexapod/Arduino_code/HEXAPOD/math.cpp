@@ -11,14 +11,11 @@ void Math::CalculateAngle(Leg* leg,unsigned long time_elapsed){
   this->length2 = leg->length_calf;
   double speed = leg->GetSpeed(); 
   // turning_angle = math.pi/8
-  unsigned int period = 2000;
+  unsigned int period = 1000;
   double z_offset=0;
-  double x_offset=130;
+  double x_offset=100;
   double y_offset=-70;
-  double DistanceTravel = 50;
-  double r_x;
-  double r_y;
-  double r_z;
+  double DistanceTravel = 90;
 
   double angle_a;
   double angle_c;
@@ -26,7 +23,8 @@ void Math::CalculateAngle(Leg* leg,unsigned long time_elapsed){
   double time = time_elapsed%period;
   double phase_angle = time/(period/2)*M_PI;
 
-  if(time <=period/2){
+  // // formula
+  if(time <= period/2){
     // circle
     r_z = DistanceTravel*cos(phase_angle)+z_offset;
     r_y = DistanceTravel*sin(phase_angle)+y_offset;
@@ -37,11 +35,16 @@ void Math::CalculateAngle(Leg* leg,unsigned long time_elapsed){
     r_y = y_offset;
     r_x = x_offset;
   }
-  // Serial.print(-r_x);
-  // Serial.print(" ");
-  // Serial.print(r_y);
-  // Serial.print(" ");
-  // Serial.println(r_z);
+  // if(time <=period/2){
+  //   r_z = (DistanceTravel+10)*2*time/(period)+z_offset;
+  //   r_y = (DistanceTravel-30)/2*sin(time/(period)*4*M_PI)+y_offset;
+  //   r_x = x_offset;
+  // }else{
+  //   r_z = (DistanceTravel+10)*(1-2*(time-period/2)/(period))+z_offset;
+  //   r_y = (DistanceTravel-30)*sin(2*M_PI-(time-period/2)/(period)*4*M_PI)+y_offset;
+  //   r_x = x_offset;
+  // }
+      
 
   // inverse kinematics
   r_x = -r_x;
@@ -61,11 +64,6 @@ void Math::CalculateAngle(Leg* leg,unsigned long time_elapsed){
     sita1 = angle_a+angle_c;
   }
 
-  //?????????????//
-  // sita1 -= 0.7;
-  //?????????????//
-
-
   if(r_x>0){
     phi = -phi;
     sita1=M_PI - sita1;
@@ -76,8 +74,10 @@ void Math::CalculateAngle(Leg* leg,unsigned long time_elapsed){
   phi = phi/M_PI*180;
   phi = phi-sita1;
   
-  
 }
+
+
+
 void Math::GetAngle(Leg* leg){
   leg->SetAngles(sita1,sita2,phi);
 }
