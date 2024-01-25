@@ -1,7 +1,7 @@
-#include "servo.h"
+#include "driver.h"
 
 MyServo::MyServo(){
-  this->servoDriver = Adafruit_PWMServoDriver();
+  this->servoDriver = Adafruit_PWMServoDriver(0x40);
 }
 
 void MyServo::initiate(){

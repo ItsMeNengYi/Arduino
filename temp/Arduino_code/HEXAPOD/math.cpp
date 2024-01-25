@@ -75,12 +75,6 @@ void Math::CalculateAngle(Leg* leg,unsigned long time_elapsed){
   sita2 = sita2/M_PI*180;
   phi = phi/M_PI*180;
   phi = phi-sita1;
-  
-  // Serial.print(sita1);
-  // Serial.print(" ");
-  // Serial.print(sita2);
-  // Serial.print(" ");
-  // Serial.println(phi);
 
 }
 void Math::GetAngle(Leg* leg){

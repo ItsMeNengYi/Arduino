@@ -1,23 +1,20 @@
 #include <Arduino.h>
-
 #include "hexapod.h"
-#include "leg.h"
-#include "math.h"
-#include "servo.h"
+// #include "servo.h"
 
-Math calculator;
-MyServo driver;
-Leg demoleg(&calculator, &driver);
-
+// MyServo testingDriver;
+Hexapod neng2;
 void setup() {
+  // testingDriver = MyServo();
+  // testingDriver.initiate();
   // Serial.begin(9600);
-  driver.initiate();
-  demoleg.Reset();
-  delay(500);
+  neng2.InitiateDriver();
 }
 
 void loop() {
-  // demoleg.Reset();
-  demoleg.Update(millis());
+  neng2.Update(millis());
+  // neng2.Update();
+  // delay(1000);
+  // neng2.Reset();
 
 }

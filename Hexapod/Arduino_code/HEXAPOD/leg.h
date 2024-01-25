@@ -2,29 +2,28 @@
 #define LEG_H
 
 #include "servo.h"
+#include "legIndex.h"
 
 class Math;
 class Leg{
 public:
   Leg(Math* calculator, MyServo* driver);
-  int length_thigh;
-  int length_calf;
+  double length_thigh;
+  double length_calf;
 private:
   Math* calculator;
   MyServo* driver;
 
   float speed;
 
-  unsigned short index_thigh1;
-  unsigned short index_thigh2;
-  unsigned short index_knee;
+  Index index;
 
-  double angle_thigh1;
-  double angle_thigh2;
+  double angle_hip;
+  double angle_thigh;
   double angle_knee;
 
-  double prev_angle_thigh1;
-  double prev_angle_thigh2;
+  double prev_angle_hip;
+  double prev_angle_thigh;
   double prev_angle_knee;
 
   unsigned long time_elapsed;
@@ -32,11 +31,21 @@ private:
 private:
 
 public:
-  void Update(unsigned long time);
-  float GetSpeed();
-  void SetAngles(double thigh1,double thigh2,double knee);
+  // void Update(unsigned long time);
+  void Update();
   void Reset();
+  void TurnAll(double hip,double thigh,double knee);
+  void TurnHip(double degree);
+  void TurnThigh(double degree);
+  void TurnKnee(double degree);
 
+  void GoToPosition(double x, double y, double z);
+
+public:
+  // Getter and Setter
+  void SetIndex(double hip,double thigh,double knee);
+  float GetSpeed();
+  void SetAngles(double hip,double thigh,double knee);
 };
 
 #endif

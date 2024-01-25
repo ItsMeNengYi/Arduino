@@ -90,14 +90,19 @@ def ThreeD_rotation(coordinate,pitch=0,yaw=0,roll=0):
     x = coordinate[0]
     y = coordinate[1]
     z = coordinate[2]
-    
+    # x = 100
+    # y = 100
+    # z = 100
+    # pitch = 0
+    # yaw = math.pi/3
+    # roll = 0
     # Rotate about X-axis
     [[y, z]] = matrix_multiply([[y,z]], rotation_matrix(-pitch))
     # Rotate about Y-axis
     [[z, x]] = matrix_multiply([[z,x]], rotation_matrix(-yaw))
     # Rotate about Z-axis
     [[x, y]] = matrix_multiply([[x,y]], rotation_matrix(-roll))
-
+    # print(f"{x} {y} {z}")
     return [x,y,z]
 
 
@@ -345,7 +350,7 @@ class Leg():
         self.sita1 = math.radians(0)
         self.sita2 = 0
         self.phi = math.radians(0)
-        self.length1 = 100
+        self.length1 = 110
         self.length2 = 170
         self.vertice1 = origin
         self.vertice2 = [0,0,0]
@@ -378,8 +383,8 @@ class Leg():
                 self.phi = -self.phi
                 self.sita1=math.pi - self.sita1
 
-            if(self.name=="L2"):
-                print(self.sita1/math.pi*180,self.sita2/math.pi*180,self.phi/math.pi*180)
+            # if(self.name=="L2"):
+            #     print(self.sita1/math.pi*180,self.sita2/math.pi*180,self.phi/math.pi*180)
 
             a = 0
             if(self.name=="L1" or self.name=="R3"):
@@ -498,6 +503,7 @@ def XYZ_axis(origin,length,player,rot_angles = []):
 pos_index = 0.5
 def required_position(time,leg):
     ZY_half_circle(time,leg)
+    # Stand(time,leg)
     # XY_circle(time,leg)
     # draw_text_on_screen(f"expected position: {[int(-r_x),int(r_y),int(r_z)]}",(0,850))
     return [r_x,r_y,r_z]
@@ -508,8 +514,8 @@ def ZY_half_circle(time,leg,turning_angle = 0 ):
     turning_angle = math.pi/8
     time = time/100*speed
     period = 2
-    z_offset=-25
-    x_offset=90
+    z_offset=0
+    x_offset=100
     y_offset=-70
     DistanceTravel = 50
     if(leg.name=="R1"or leg.name=="R3" or leg.name=="R2"):
@@ -519,8 +525,8 @@ def ZY_half_circle(time,leg,turning_angle = 0 ):
 
     if(leg.name=="L1"or leg.name=="R1"):
         z_offset=-50
-    if(leg.name=="L3"or leg.name=="R3"):
-        z_offset=50
+    # if(leg.name=="L3"or leg.name=="R3"):
+        # z_offset=50
 
     # if(turning_angle!=0):
     #     turning_angle = turning_angle/2
@@ -559,7 +565,12 @@ def ZY_half_circle(time,leg,turning_angle = 0 ):
         [r_x,r_y,r_z] = ThreeD_rotation([r_x,r_y,r_z],0,-DEVIATE_ANGLE)
     
     if(leg.name=="L3"or leg.name=="R1"):
+        # CURRENTBUG
+        # if(leg.name=="L3"):
+        #     print(f" {int(r_x)} {int(r_y)} {int(r_z)}",end=" ")
         [r_x,r_y,r_z] = ThreeD_rotation([r_x,r_y,r_z],0,DEVIATE_ANGLE)
+        # if(leg.name=="L3"):
+        #     print(f" {int(r_x)} {int(r_y)} {int(r_z)}")
 
 
     # if(turning_angle!=0 ):
@@ -570,19 +581,38 @@ def ZY_half_circle(time,leg,turning_angle = 0 ):
 
 def XY_circle(time,leg):
     global r_x,r_y,r_z
-    time = time/100
+    time = time/100 
     phase_diff = math.pi*0
     period = 2
     r_z = 0
     r_y = 10*math.sin(time/period*math.pi+phase_diff)-30
     r_x = 10*math.cos(time/period*math.pi+phase_diff)+30
 
-
+def Stand(time,leg):
+    global r_x,r_y,r_z
+    time = time/100
+    phase_diff = math.pi*0
+    period = 2
+    time = time % period
+    if(time <=period/2):
+        #curve
+        r_x = 240 - math.sin(time*math.pi/2)*90
+        r_y = math.cos(time*math.pi/2)*11
+        r_z = 0
+    else:
+        #line
+        r_x = 150
+        r_y = (time - 1)*-40
+        r_z = 0
+    if(leg.name[0]=="R"):
+        r_x = -r_x
 
 DEVIATE_ANGLE = math.pi/3
 CENTER = [5050,5000,1010]
 
 # Create Elements
+body_size = 100
+body = Object(CENTER, Hexagon(body_size),[])
 Player1 = Player(90, (1920,1080), 1000,)
 leg_L1 = Leg([5025,5000,1053.3],"L1")
 leg_L2 = Leg([5000,5000,1010],"L2")
@@ -592,7 +622,6 @@ leg_R1 = Leg([5075,5000,1053.3],"R1")
 leg_R2 = Leg([5100,5000,1010],"R2")
 leg_R3 = Leg([5075,5000,966.7],"R3")
 
-body = Object(CENTER, Hexagon(50),[])
 
 Objects_list = [
     body

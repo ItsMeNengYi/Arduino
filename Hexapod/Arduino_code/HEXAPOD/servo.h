@@ -11,10 +11,19 @@ class MyServo{
 public:
   MyServo();
 private:
-  Adafruit_PWMServoDriver servoDriver;
-  short servoMin = servoMIN;
-  short sercoMax = servoMAX;
-
+  Adafruit_PWMServoDriver servoDriver1;
+  Adafruit_PWMServoDriver servoDriver2;
+  short DS3218servoMin = 544;
+  short DS3218servoMax = 2400;
+  
+  short DS3235servoMin = 500;
+  short DS3235servoMax = 2500;
+  
+  double pulseWidth;
+  double curMin;
+  double curMax;
+  short SType;
+  short servotype[33] = {0,0,0,0,0,2,1,1,0,2,1,1,0,2,1,1,0,2,1,1,0,2,1,1,0,2,1,3,0,0,0,0,0};
 public:
   void initiate();
   void SetAngle(unsigned short index,double angle);
