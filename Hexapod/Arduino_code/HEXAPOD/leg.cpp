@@ -12,10 +12,6 @@ Leg::Leg(Math* calculator,MyServo* driver){
   this->driver = driver;
 }
 void Leg::Update(){
-  // //transform
-  // angle_hip+=135;
-  // angle_thigh+=135;
-  // angle_knee = 270 - angle_knee;
 
   driver->SetAngle(index.hip,angle_hip);
   prev_angle_hip = angle_hip;
@@ -83,29 +79,4 @@ void Leg::TurnKnee(double degree){
   driver->SetAngle(index.knee,angle_knee);
   prev_angle_knee = angle_knee;
 }
-
-// void Leg::Update(unsigned long time){
-//   calculator->CalculateAngle(this,time);
-//   calculator->GetAngle(this);
-
-//   //transform
-//   angle_hip+=135;
-//   angle_thigh+=135;
-//   angle_knee = 270 - angle_knee;
-
-//   // Serial.print(angle_hip);
-//   // Serial.print(" ");
-//   // Serial.print(angle_thigh);
-//   // Serial.print(" ");
-//   // Serial.println(angle_knee);
-
-//   driver->SetAngle(index.hip,angle_hip);
-//   prev_angle_hip = angle_hip;
-
-//   driver->SetAngle(index.thigh,angle_thigh);
-//   prev_angle_thigh = angle_thigh;
-
-//   driver->SetAngle(index.knee,angle_knee);
-//   prev_angle_knee = angle_knee;
-// }
 

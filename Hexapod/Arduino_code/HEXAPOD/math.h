@@ -25,6 +25,10 @@ private:
   double sita2;
   double phi;
 
+  double angle_hip;
+  double angle_thigh;
+  double angle_knee;
+
   double r_matrix[2][2] = {{0,0},{0,0}};
   double temp_matrix[4][4]= {{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
 private:
